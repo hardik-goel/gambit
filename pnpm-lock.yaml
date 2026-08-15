@@ -26,6 +26,15 @@ importers:
       '@gambit/core':
         specifier: workspace:*
         version: link:../../packages/core
+      '@gambit/game-facet':
+        specifier: workspace:*
+        version: link:../../packages/games/facet
+      '@gambit/game-mosaic':
+        specifier: workspace:*
+        version: link:../../packages/games/mosaic
+      '@gambit/game-quintet':
+        specifier: workspace:*
+        version: link:../../packages/games/quintet
       '@gambit/games':
         specifier: workspace:*
         version: link:../../packages/games/registry
@@ -114,11 +123,86 @@ importers:
         specifier: ^5.7.3
         version: 5.9.3
 
+  packages/games/facet:
+    dependencies:
+      '@gambit/sdk':
+        specifier: workspace:*
+        version: link:../../sdk
+      framer-motion:
+        specifier: ^11.15.0
+        version: 11.18.2(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      zod:
+        specifier: ^3.24.1
+        version: 3.25.76
+    devDependencies:
+      '@types/react':
+        specifier: ^19.0.7
+        version: 19.2.18
+      react:
+        specifier: ^19.0.0
+        version: 19.2.8
+      typescript:
+        specifier: ^5.7.3
+        version: 5.9.3
+
+  packages/games/mosaic:
+    dependencies:
+      '@gambit/sdk':
+        specifier: workspace:*
+        version: link:../../sdk
+      framer-motion:
+        specifier: ^11.15.0
+        version: 11.18.2(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      zod:
+        specifier: ^3.24.1
+        version: 3.25.76
+    devDependencies:
+      '@types/react':
+        specifier: ^19.0.7
+        version: 19.2.18
+      react:
+        specifier: ^19.0.0
+        version: 19.2.8
+      typescript:
+        specifier: ^5.7.3
+        version: 5.9.3
+
+  packages/games/quintet:
+    dependencies:
+      '@gambit/sdk':
+        specifier: workspace:*
+        version: link:../../sdk
+      framer-motion:
+        specifier: ^11.15.0
+        version: 11.18.2(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      zod:
+        specifier: ^3.24.1
+        version: 3.25.76
+    devDependencies:
+      '@types/react':
+        specifier: ^19.0.7
+        version: 19.2.18
+      react:
+        specifier: ^19.0.0
+        version: 19.2.8
+      typescript:
+        specifier: ^5.7.3
+        version: 5.9.3
+
   packages/games/registry:
     dependencies:
       '@gambit/game-chess':
         specifier: workspace:*
         version: link:../chess
+      '@gambit/game-facet':
+        specifier: workspace:*
+        version: link:../facet
+      '@gambit/game-mosaic':
+        specifier: workspace:*
+        version: link:../mosaic
+      '@gambit/game-quintet':
+        specifier: workspace:*
+        version: link:../quintet
       '@gambit/sdk':
         specifier: workspace:*
         version: link:../../sdk

@@ -3,9 +3,24 @@
   "compilerOptions": {
     "noEmit": true,
     "paths": {
-      "@gambit/sdk": ["../../sdk/src/index.ts"],
-      "@gambit/game-chess": ["../chess/src/index.ts"]
+      "@gambit/sdk": [
+        "../../sdk/src/index.ts"
+      ],
+      "@gambit/game-chess": [
+        "../chess/src/index.ts"
+      ],
+      "@gambit/game-quintet": [
+        "../quintet/src/index.ts"
+      ],
+      "@gambit/game-mosaic": [
+        "../mosaic/src/index.ts"
+      ],
+      "@gambit/game-facet": [
+        "../facet/src/index.ts"
+      ]
     }
   },
-  "include": ["src"]
+  "include": [
+    "src"
+  ]
 }

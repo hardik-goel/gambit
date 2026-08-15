@@ -28,6 +28,15 @@
       ],
       "@gambit/game-chess": [
         "../../packages/games/chess/src/index.ts"
+      ],
+      "@gambit/game-quintet": [
+        "../../packages/games/quintet/src/index.ts"
+      ],
+      "@gambit/game-mosaic": [
+        "../../packages/games/mosaic/src/index.ts"
+      ],
+      "@gambit/game-facet": [
+        "../../packages/games/facet/src/index.ts"
       ]
     },
     "allowJs": true,

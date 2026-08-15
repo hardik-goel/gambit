@@ -7,9 +7,15 @@
  */
 import type { AnyGameDefinition } from "@gambit/sdk";
 import chess from "@gambit/game-chess";
+import quintet from "@gambit/game-quintet";
+import mosaic from "@gambit/game-mosaic";
+import facet from "@gambit/game-facet";
 
 export const CATALOG: Record<string, AnyGameDefinition> = {
-  chess
+  facet,
+  mosaic,
+  chess,
+  quintet
 };
 
 /** Shelf order — how the boxes stand on the plank. */
