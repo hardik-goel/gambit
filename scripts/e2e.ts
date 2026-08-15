@@ -213,6 +213,53 @@ async function main() {
 
     await aliceStream.stop();
     await bobAgain.stop();
+
+    /* ---- a seat that walks away is covered, and can be taken back ---- */
+
+    const { room: timed } = await alice.json<{ room: { id: string; code: string; turnTimeoutSec: number } }>(
+      "/api/rooms",
+      {
+        method: "POST",
+        body: JSON.stringify({ gameId: "chess", config: { clock: "none" }, turnTimeoutSec: 10 })
+      }
+    );
+    check("a table can set its own turn clock", timed.turnTimeoutSec === 10);
+
+    await bob.json(`/api/rooms/${timed.id}`);
+    await bob.json(`/api/rooms/${timed.id}/action`, {
+      method: "POST",
+      body: JSON.stringify({ action: "seat", seat: 1 })
+    });
+    for (const who of [alice, bob]) {
+      await who.json(`/api/rooms/${timed.id}/action`, {
+        method: "POST",
+        body: JSON.stringify({ action: "ready", ready: true })
+      });
+    }
+    await alice.json(`/api/rooms/${timed.id}/action`, {
+      method: "POST",
+      body: JSON.stringify({ action: "start" })
+    });
+
+    // Nobody moves. The table must not wait forever.
+    await sleep(17_000);
+    const covered = await alice.json<{ view: { history: unknown[] }; current: number[] }>(
+      `/api/rooms/${timed.id}`
+    );
+    check(
+      "an abandoned seat is covered by a bot rather than stalling the table",
+      covered.view.history.length >= 1,
+      `${covered.view.history.length} moves played`
+    );
+
+    const black = await bob.json<{ current: number[]; legal: unknown[] }>(`/api/rooms/${timed.id}`);
+    if (black.current[0] === 1 && black.legal.length > 0) {
+      const reclaimed = await bob.fetch(`/api/rooms/${timed.id}/moves`, {
+        method: "POST",
+        body: JSON.stringify({ move: black.legal[0], idempotencyKey: "reclaim" })
+      });
+      check("and the human takes the seat straight back by moving", reclaimed.ok);
+    }
   } finally {
     server.kill("SIGTERM");
   }

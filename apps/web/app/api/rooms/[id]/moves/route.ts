@@ -3,6 +3,7 @@ import { submitMove } from "@gambit/core";
 import { requireIdentity } from "@/lib/server/identity";
 import { deps } from "@/lib/server/table";
 import { rateLimit } from "@/lib/server/rateLimit";
+import { watchTable } from "@/lib/server/timeouts";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -43,5 +44,8 @@ export async function POST(req: Request, ctx: { params: Promise<{ id: string }> 
   });
 
   if (!res.ok) return NextResponse.json({ error: res.error }, { status: 409 });
+
+  // Whoever is to move next is now on the clock.
+  void watchTable(id);
   return NextResponse.json(res.value);
 }

@@ -15,6 +15,7 @@ import type { Room } from "@gambit/core";
 import type { Result } from "@gambit/sdk";
 import { requireIdentity } from "@/lib/server/identity";
 import { deps, setSubscriberSeat } from "@/lib/server/table";
+import { watchTable } from "@/lib/server/timeouts";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -88,5 +89,8 @@ export async function POST(req: Request, ctx: { params: Promise<{ id: string }> 
   }
 
   if (!res.ok) return NextResponse.json({ error: res.error }, { status: 400 });
+
+  // Starting a game puts the first seat on the clock.
+  if (body.action === "start" || body.action === "rematch") void watchTable(id);
   return NextResponse.json({ ok: true, value: res.value });
 }
