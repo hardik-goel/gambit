@@ -38,6 +38,12 @@ importers:
       '@gambit/game-mosaic':
         specifier: workspace:*
         version: link:../../packages/games/mosaic
+      '@gambit/game-motive':
+        specifier: workspace:*
+        version: link:../../packages/games/motive
+      '@gambit/game-phantom':
+        specifier: workspace:*
+        version: link:../../packages/games/phantom
       '@gambit/game-quintet':
         specifier: workspace:*
         version: link:../../packages/games/quintet
@@ -223,6 +229,50 @@ importers:
         specifier: ^5.7.3
         version: 5.9.3
 
+  packages/games/motive:
+    dependencies:
+      '@gambit/sdk':
+        specifier: workspace:*
+        version: link:../../sdk
+      framer-motion:
+        specifier: ^11.15.0
+        version: 11.18.2(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      zod:
+        specifier: ^3.24.1
+        version: 3.25.76
+    devDependencies:
+      '@types/react':
+        specifier: ^19.0.7
+        version: 19.2.18
+      react:
+        specifier: ^19.0.0
+        version: 19.2.8
+      typescript:
+        specifier: ^5.7.3
+        version: 5.9.3
+
+  packages/games/phantom:
+    dependencies:
+      '@gambit/sdk':
+        specifier: workspace:*
+        version: link:../../sdk
+      framer-motion:
+        specifier: ^11.15.0
+        version: 11.18.2(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      zod:
+        specifier: ^3.24.1
+        version: 3.25.76
+    devDependencies:
+      '@types/react':
+        specifier: ^19.0.7
+        version: 19.2.18
+      react:
+        specifier: ^19.0.0
+        version: 19.2.8
+      typescript:
+        specifier: ^5.7.3
+        version: 5.9.3
+
   packages/games/quintet:
     dependencies:
       '@gambit/sdk':
@@ -262,6 +312,12 @@ importers:
       '@gambit/game-mosaic':
         specifier: workspace:*
         version: link:../mosaic
+      '@gambit/game-motive':
+        specifier: workspace:*
+        version: link:../motive
+      '@gambit/game-phantom':
+        specifier: workspace:*
+        version: link:../phantom
       '@gambit/game-quintet':
         specifier: workspace:*
         version: link:../quintet

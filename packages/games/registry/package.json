@@ -19,7 +19,9 @@
     "@gambit/game-facet": "workspace:*",
     "@gambit/game-boxcar": "workspace:*",
     "@gambit/game-hamlet": "workspace:*",
-    "@gambit/game-stronghold": "workspace:*"
+    "@gambit/game-stronghold": "workspace:*",
+    "@gambit/game-phantom": "workspace:*",
+    "@gambit/game-motive": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.7.3"

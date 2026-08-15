@@ -46,6 +46,12 @@
       ],
       "@gambit/game-stronghold": [
         "../../packages/games/stronghold/src/index.ts"
+      ],
+      "@gambit/game-phantom": [
+        "../../packages/games/phantom/src/index.ts"
+      ],
+      "@gambit/game-motive": [
+        "../../packages/games/motive/src/index.ts"
       ]
     },
     "allowJs": true,

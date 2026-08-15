@@ -13,8 +13,12 @@ import facet from "@gambit/game-facet";
 import boxcar from "@gambit/game-boxcar";
 import hamlet from "@gambit/game-hamlet";
 import stronghold from "@gambit/game-stronghold";
+import phantom from "@gambit/game-phantom";
+import motive from "@gambit/game-motive";
 
 export const CATALOG: Record<string, AnyGameDefinition> = {
+  motive,
+  phantom,
   stronghold,
   hamlet,
   boxcar,

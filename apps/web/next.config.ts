@@ -5,7 +5,7 @@ const config: NextConfig = {
   // Workspace packages ship TypeScript source: Next compiles them with the app,
   // which is also what keeps the engine isomorphic — the exact same module runs
   // in the route handler and in the browser.
-  transpilePackages: ["@gambit/core", "@gambit/sdk", "@gambit/ui", "@gambit/games", "@gambit/game-stronghold", "@gambit/game-hamlet", "@gambit/game-boxcar", "@gambit/game-facet", "@gambit/game-mosaic", "@gambit/game-chess", "@gambit/game-quintet"],
+  transpilePackages: ["@gambit/core", "@gambit/sdk", "@gambit/ui", "@gambit/games", "@gambit/game-motive", "@gambit/game-phantom", "@gambit/game-stronghold", "@gambit/game-hamlet", "@gambit/game-boxcar", "@gambit/game-facet", "@gambit/game-mosaic", "@gambit/game-chess", "@gambit/game-quintet"],
   experimental: {
     optimizePackageImports: ["framer-motion"]
   }
