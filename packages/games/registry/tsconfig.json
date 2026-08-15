@@ -17,6 +17,15 @@
       ],
       "@gambit/game-facet": [
         "../facet/src/index.ts"
+      ],
+      "@gambit/game-boxcar": [
+        "../boxcar/src/index.ts"
+      ],
+      "@gambit/game-hamlet": [
+        "../hamlet/src/index.ts"
+      ],
+      "@gambit/game-stronghold": [
+        "../stronghold/src/index.ts"
       ]
     }
   },

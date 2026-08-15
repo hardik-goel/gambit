@@ -2,7 +2,16 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "noEmit": true,
-    "paths": { "@gambit/sdk": ["../sdk/src/index.ts"] }
+    "paths": {
+      "@gambit/sdk": [
+        "../sdk/src/index.ts"
+      ],
+      "@gambit/game-chess": [
+        "../games/chess/src/index.ts"
+      ]
+    }
   },
-  "include": ["src"]
+  "include": [
+    "src"
+  ]
 }

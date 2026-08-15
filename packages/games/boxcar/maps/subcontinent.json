@@ -1,0 +1,745 @@
+{
+ "id": "subcontinent",
+ "name": "Subcontinent",
+ "tagline": "India · 26 cities · Himalayan tunnels & stations",
+ "stations": true,
+ "cities": [
+  {
+   "key": "srinagar",
+   "name": "Srinagar",
+   "x": 330,
+   "y": 55
+  },
+  {
+   "key": "amritsar",
+   "name": "Amritsar",
+   "x": 300,
+   "y": 135
+  },
+  {
+   "key": "chandigarh",
+   "name": "Chandigarh",
+   "x": 375,
+   "y": 145
+  },
+  {
+   "key": "delhi",
+   "name": "Delhi",
+   "x": 390,
+   "y": 215
+  },
+  {
+   "key": "jaipur",
+   "name": "Jaipur",
+   "x": 315,
+   "y": 275
+  },
+  {
+   "key": "jodhpur",
+   "name": "Jodhpur",
+   "x": 240,
+   "y": 300
+  },
+  {
+   "key": "ahmedabad",
+   "name": "Ahmedabad",
+   "x": 215,
+   "y": 380
+  },
+  {
+   "key": "surat",
+   "name": "Surat",
+   "x": 240,
+   "y": 445
+  },
+  {
+   "key": "mumbai",
+   "name": "Mumbai",
+   "x": 255,
+   "y": 510
+  },
+  {
+   "key": "pune",
+   "name": "Pune",
+   "x": 300,
+   "y": 540
+  },
+  {
+   "key": "goa",
+   "name": "Goa",
+   "x": 315,
+   "y": 595
+  },
+  {
+   "key": "kochi",
+   "name": "Kochi",
+   "x": 360,
+   "y": 650
+  },
+  {
+   "key": "madurai",
+   "name": "Madurai",
+   "x": 455,
+   "y": 645
+  },
+  {
+   "key": "bengaluru",
+   "name": "Bengaluru",
+   "x": 430,
+   "y": 585
+  },
+  {
+   "key": "chennai",
+   "name": "Chennai",
+   "x": 525,
+   "y": 585
+  },
+  {
+   "key": "hyderabad",
+   "name": "Hyderabad",
+   "x": 445,
+   "y": 485
+  },
+  {
+   "key": "nagpur",
+   "name": "Nagpur",
+   "x": 450,
+   "y": 385
+  },
+  {
+   "key": "bhopal",
+   "name": "Bhopal",
+   "x": 385,
+   "y": 335
+  },
+  {
+   "key": "indore",
+   "name": "Indore",
+   "x": 320,
+   "y": 355
+  },
+  {
+   "key": "lucknow",
+   "name": "Lucknow",
+   "x": 490,
+   "y": 235
+  },
+  {
+   "key": "varanasi",
+   "name": "Varanasi",
+   "x": 555,
+   "y": 275
+  },
+  {
+   "key": "patna",
+   "name": "Patna",
+   "x": 615,
+   "y": 265
+  },
+  {
+   "key": "kolkata",
+   "name": "Kolkata",
+   "x": 675,
+   "y": 330
+  },
+  {
+   "key": "bhubaneswar",
+   "name": "Bhubaneswar",
+   "x": 625,
+   "y": 420
+  },
+  {
+   "key": "visakhapatnam",
+   "name": "Visakhapatnam",
+   "x": 560,
+   "y": 470
+  },
+  {
+   "key": "guwahati",
+   "name": "Guwahati",
+   "x": 790,
+   "y": 235
+  }
+ ],
+ "routes": [
+  {
+   "id": 0,
+   "a": "srinagar",
+   "b": "amritsar",
+   "len": 2,
+   "color": "gray",
+   "tunnel": true,
+   "ferry": 0
+  },
+  {
+   "id": 1,
+   "a": "srinagar",
+   "b": "chandigarh",
+   "len": 3,
+   "color": "gray",
+   "tunnel": true,
+   "ferry": 0
+  },
+  {
+   "id": 2,
+   "a": "amritsar",
+   "b": "chandigarh",
+   "len": 1,
+   "color": "gray",
+   "tunnel": false,
+   "ferry": 0
+  },
+  {
+   "id": 3,
+   "a": "amritsar",
+   "b": "delhi",
+   "len": 3,
+   "color": "orange",
+   "tunnel": false,
+   "ferry": 0
+  },
+  {
+   "id": 4,
+   "a": "chandigarh",
+   "b": "delhi",
+   "len": 2,
+   "color": "blue",
+   "tunnel": false,
+   "ferry": 0,
+   "twin": 5
+  },
+  {
+   "id": 5,
+   "a": "chandigarh",
+   "b": "delhi",
+   "len": 2,
+   "color": "red",
+   "tunnel": false,
+   "ferry": 0,
+   "twin": 4
+  },
+  {
+   "id": 6,
+   "a": "delhi",
+   "b": "jaipur",
+   "len": 2,
+   "color": "green",
+   "tunnel": false,
+   "ferry": 0,
+   "twin": 7
+  },
+  {
+   "id": 7,
+   "a": "delhi",
+   "b": "jaipur",
+   "len": 2,
+   "color": "yellow",
+   "tunnel": false,
+   "ferry": 0,
+   "twin": 6
+  },
+  {
+   "id": 8,
+   "a": "delhi",
+   "b": "lucknow",
+   "len": 3,
+   "color": "red",
+   "tunnel": false,
+   "ferry": 0,
+   "twin": 9
+  },
+  {
+   "id": 9,
+   "a": "delhi",
+   "b": "lucknow",
+   "len": 3,
+   "color": "white",
+   "tunnel": false,
+   "ferry": 0,
+   "twin": 8
+  },
+  {
+   "id": 10,
+   "a": "jaipur",
+   "b": "jodhpur",
+   "len": 2,
+   "color": "gray",
+   "tunnel": false,
+   "ferry": 0
+  },
+  {
+   "id": 11,
+   "a": "jaipur",
+   "b": "bhopal",
+   "len": 3,
+   "color": "purple",
+   "tunnel": false,
+   "ferry": 0
+  },
+  {
+   "id": 12,
+   "a": "jodhpur",
+   "b": "ahmedabad",
+   "len": 3,
+   "color": "orange",
+   "tunnel": false,
+   "ferry": 0
+  },
+  {
+   "id": 13,
+   "a": "ahmedabad",
+   "b": "indore",
+   "len": 3,
+   "color": "gray",
+   "tunnel": false,
+   "ferry": 0
+  },
+  {
+   "id": 14,
+   "a": "indore",
+   "b": "bhopal",
+   "len": 1,
+   "color": "gray",
+   "tunnel": false,
+   "ferry": 0
+  },
+  {
+   "id": 15,
+   "a": "ahmedabad",
+   "b": "surat",
+   "len": 2,
+   "color": "yellow",
+   "tunnel": false,
+   "ferry": 0
+  },
+  {
+   "id": 16,
+   "a": "surat",
+   "b": "mumbai",
+   "len": 2,
+   "color": "blue",
+   "tunnel": false,
+   "ferry": 0,
+   "twin": 17
+  },
+  {
+   "id": 17,
+   "a": "surat",
+   "b": "mumbai",
+   "len": 2,
+   "color": "black",
+   "tunnel": false,
+   "ferry": 0,
+   "twin": 16
+  },
+  {
+   "id": 18,
+   "a": "mumbai",
+   "b": "pune",
+   "len": 1,
+   "color": "gray",
+   "tunnel": false,
+   "ferry": 0,
+   "twin": 19
+  },
+  {
+   "id": 19,
+   "a": "mumbai",
+   "b": "pune",
+   "len": 1,
+   "color": "gray",
+   "tunnel": false,
+   "ferry": 0,
+   "twin": 18
+  },
+  {
+   "id": 20,
+   "a": "pune",
+   "b": "goa",
+   "len": 3,
+   "color": "green",
+   "tunnel": false,
+   "ferry": 0
+  },
+  {
+   "id": 21,
+   "a": "pune",
+   "b": "hyderabad",
+   "len": 4,
+   "color": "black",
+   "tunnel": false,
+   "ferry": 0
+  },
+  {
+   "id": 22,
+   "a": "goa",
+   "b": "bengaluru",
+   "len": 4,
+   "color": "purple",
+   "tunnel": false,
+   "ferry": 0
+  },
+  {
+   "id": 23,
+   "a": "goa",
+   "b": "kochi",
+   "len": 4,
+   "color": "gray",
+   "tunnel": false,
+   "ferry": 1
+  },
+  {
+   "id": 24,
+   "a": "kochi",
+   "b": "madurai",
+   "len": 2,
+   "color": "gray",
+   "tunnel": false,
+   "ferry": 0
+  },
+  {
+   "id": 25,
+   "a": "madurai",
+   "b": "bengaluru",
+   "len": 3,
+   "color": "yellow",
+   "tunnel": false,
+   "ferry": 0
+  },
+  {
+   "id": 26,
+   "a": "madurai",
+   "b": "chennai",
+   "len": 4,
+   "color": "orange",
+   "tunnel": false,
+   "ferry": 0
+  },
+  {
+   "id": 27,
+   "a": "bengaluru",
+   "b": "chennai",
+   "len": 2,
+   "color": "red",
+   "tunnel": false,
+   "ferry": 0,
+   "twin": 28
+  },
+  {
+   "id": 28,
+   "a": "bengaluru",
+   "b": "chennai",
+   "len": 2,
+   "color": "white",
+   "tunnel": false,
+   "ferry": 0,
+   "twin": 27
+  },
+  {
+   "id": 29,
+   "a": "bengaluru",
+   "b": "hyderabad",
+   "len": 4,
+   "color": "blue",
+   "tunnel": false,
+   "ferry": 0
+  },
+  {
+   "id": 30,
+   "a": "chennai",
+   "b": "hyderabad",
+   "len": 4,
+   "color": "green",
+   "tunnel": false,
+   "ferry": 0
+  },
+  {
+   "id": 31,
+   "a": "chennai",
+   "b": "visakhapatnam",
+   "len": 5,
+   "color": "purple",
+   "tunnel": false,
+   "ferry": 0
+  },
+  {
+   "id": 32,
+   "a": "hyderabad",
+   "b": "nagpur",
+   "len": 3,
+   "color": "white",
+   "tunnel": false,
+   "ferry": 0
+  },
+  {
+   "id": 33,
+   "a": "hyderabad",
+   "b": "visakhapatnam",
+   "len": 4,
+   "color": "yellow",
+   "tunnel": false,
+   "ferry": 0
+  },
+  {
+   "id": 34,
+   "a": "nagpur",
+   "b": "bhopal",
+   "len": 2,
+   "color": "gray",
+   "tunnel": false,
+   "ferry": 0
+  },
+  {
+   "id": 35,
+   "a": "nagpur",
+   "b": "bhubaneswar",
+   "len": 5,
+   "color": "red",
+   "tunnel": false,
+   "ferry": 0
+  },
+  {
+   "id": 36,
+   "a": "nagpur",
+   "b": "varanasi",
+   "len": 4,
+   "color": "green",
+   "tunnel": false,
+   "ferry": 0
+  },
+  {
+   "id": 37,
+   "a": "bhopal",
+   "b": "lucknow",
+   "len": 4,
+   "color": "black",
+   "tunnel": false,
+   "ferry": 0
+  },
+  {
+   "id": 38,
+   "a": "lucknow",
+   "b": "varanasi",
+   "len": 2,
+   "color": "gray",
+   "tunnel": false,
+   "ferry": 0,
+   "twin": 39
+  },
+  {
+   "id": 39,
+   "a": "lucknow",
+   "b": "varanasi",
+   "len": 2,
+   "color": "gray",
+   "tunnel": false,
+   "ferry": 0,
+   "twin": 38
+  },
+  {
+   "id": 40,
+   "a": "varanasi",
+   "b": "patna",
+   "len": 2,
+   "color": "orange",
+   "tunnel": false,
+   "ferry": 0
+  },
+  {
+   "id": 41,
+   "a": "patna",
+   "b": "kolkata",
+   "len": 3,
+   "color": "blue",
+   "tunnel": false,
+   "ferry": 0
+  },
+  {
+   "id": 42,
+   "a": "patna",
+   "b": "guwahati",
+   "len": 6,
+   "color": "gray",
+   "tunnel": true,
+   "ferry": 0
+  },
+  {
+   "id": 43,
+   "a": "kolkata",
+   "b": "guwahati",
+   "len": 5,
+   "color": "gray",
+   "tunnel": true,
+   "ferry": 0
+  },
+  {
+   "id": 44,
+   "a": "kolkata",
+   "b": "bhubaneswar",
+   "len": 3,
+   "color": "green",
+   "tunnel": false,
+   "ferry": 0
+  },
+  {
+   "id": 45,
+   "a": "bhubaneswar",
+   "b": "visakhapatnam",
+   "len": 3,
+   "color": "orange",
+   "tunnel": false,
+   "ferry": 0
+  },
+  {
+   "id": 46,
+   "a": "indore",
+   "b": "surat",
+   "len": 3,
+   "color": "white",
+   "tunnel": false,
+   "ferry": 0
+  }
+ ],
+ "tickets": [
+  {
+   "id": 0,
+   "a": "delhi",
+   "b": "mumbai",
+   "points": 11,
+   "long": false
+  },
+  {
+   "id": 1,
+   "a": "delhi",
+   "b": "kolkata",
+   "points": 10,
+   "long": false
+  },
+  {
+   "id": 2,
+   "a": "mumbai",
+   "b": "chennai",
+   "points": 9,
+   "long": false
+  },
+  {
+   "id": 3,
+   "a": "delhi",
+   "b": "chennai",
+   "points": 14,
+   "long": true
+  },
+  {
+   "id": 4,
+   "a": "srinagar",
+   "b": "kochi",
+   "points": 24,
+   "long": true
+  },
+  {
+   "id": 5,
+   "a": "amritsar",
+   "b": "kolkata",
+   "points": 13,
+   "long": true
+  },
+  {
+   "id": 6,
+   "a": "jaipur",
+   "b": "hyderabad",
+   "points": 8,
+   "long": false
+  },
+  {
+   "id": 7,
+   "a": "ahmedabad",
+   "b": "bengaluru",
+   "points": 12,
+   "long": false
+  },
+  {
+   "id": 8,
+   "a": "mumbai",
+   "b": "kolkata",
+   "points": 15,
+   "long": false
+  },
+  {
+   "id": 9,
+   "a": "kolkata",
+   "b": "chennai",
+   "points": 11,
+   "long": false
+  },
+  {
+   "id": 10,
+   "a": "delhi",
+   "b": "bengaluru",
+   "points": 14,
+   "long": false
+  },
+  {
+   "id": 11,
+   "a": "guwahati",
+   "b": "mumbai",
+   "points": 20,
+   "long": true
+  },
+  {
+   "id": 12,
+   "a": "lucknow",
+   "b": "hyderabad",
+   "points": 9,
+   "long": false
+  },
+  {
+   "id": 13,
+   "a": "jodhpur",
+   "b": "varanasi",
+   "points": 9,
+   "long": false
+  },
+  {
+   "id": 14,
+   "a": "surat",
+   "b": "goa",
+   "points": 6,
+   "long": false
+  },
+  {
+   "id": 15,
+   "a": "patna",
+   "b": "bhubaneswar",
+   "points": 6,
+   "long": false
+  },
+  {
+   "id": 16,
+   "a": "chandigarh",
+   "b": "bhopal",
+   "points": 7,
+   "long": false
+  },
+  {
+   "id": 17,
+   "a": "chennai",
+   "b": "guwahati",
+   "points": 16,
+   "long": true
+  },
+  {
+   "id": 18,
+   "a": "kochi",
+   "b": "hyderabad",
+   "points": 9,
+   "long": false
+  },
+  {
+   "id": 19,
+   "a": "nagpur",
+   "b": "kolkata",
+   "points": 8,
+   "long": false
+  }
+ ]
+}

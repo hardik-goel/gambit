@@ -37,6 +37,15 @@
       ],
       "@gambit/game-facet": [
         "../../packages/games/facet/src/index.ts"
+      ],
+      "@gambit/game-boxcar": [
+        "../../packages/games/boxcar/src/index.ts"
+      ],
+      "@gambit/game-hamlet": [
+        "../../packages/games/hamlet/src/index.ts"
+      ],
+      "@gambit/game-stronghold": [
+        "../../packages/games/stronghold/src/index.ts"
       ]
     },
     "allowJs": true,

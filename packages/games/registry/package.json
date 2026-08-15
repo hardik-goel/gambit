@@ -16,7 +16,10 @@
     "@gambit/sdk": "workspace:*",
     "@gambit/game-quintet": "workspace:*",
     "@gambit/game-mosaic": "workspace:*",
-    "@gambit/game-facet": "workspace:*"
+    "@gambit/game-facet": "workspace:*",
+    "@gambit/game-boxcar": "workspace:*",
+    "@gambit/game-hamlet": "workspace:*",
+    "@gambit/game-stronghold": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.7.3"

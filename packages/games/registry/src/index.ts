@@ -10,8 +10,14 @@ import chess from "@gambit/game-chess";
 import quintet from "@gambit/game-quintet";
 import mosaic from "@gambit/game-mosaic";
 import facet from "@gambit/game-facet";
+import boxcar from "@gambit/game-boxcar";
+import hamlet from "@gambit/game-hamlet";
+import stronghold from "@gambit/game-stronghold";
 
 export const CATALOG: Record<string, AnyGameDefinition> = {
+  stronghold,
+  hamlet,
+  boxcar,
   facet,
   mosaic,
   chess,
