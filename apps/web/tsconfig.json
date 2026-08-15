@@ -1,0 +1,46 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": [
+        "./*"
+      ],
+      "@gambit/sdk": [
+        "../../packages/sdk/src/index.ts"
+      ],
+      "@gambit/sdk/testkit": [
+        "../../packages/sdk/src/testkit/index.ts"
+      ],
+      "@gambit/core": [
+        "../../packages/core/src/index.ts"
+      ],
+      "@gambit/ui": [
+        "../../packages/ui/src/index.ts"
+      ],
+      "@gambit/games": [
+        "../../packages/games/registry/src/index.ts"
+      ],
+      "@gambit/game-chess": [
+        "../../packages/games/chess/src/index.ts"
+      ]
+    },
+    "allowJs": true,
+    "incremental": true,
+    "jsx": "preserve"
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

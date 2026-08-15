@@ -1,0 +1,24 @@
+{
+  "name": "gambit",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Gambit — the one-stop multiplayer board-gaming platform.",
+  "packageManager": "pnpm@9.15.4",
+  "engines": { "node": ">=20.11" },
+  "scripts": {
+    "dev": "pnpm --filter @gambit/web dev",
+    "build": "pnpm -r --filter=!@gambit/web build && pnpm --filter @gambit/web build",
+    "typecheck": "pnpm -r typecheck",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "sim": "tsx scripts/sim.ts",
+    "mapcheck": "tsx scripts/mapcheck.ts",
+    "lint": "next lint --dir apps/web"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3",
+    "vitest": "^2.1.8"
+  }
+}

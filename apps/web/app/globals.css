@@ -1,0 +1,106 @@
+@import "tailwindcss";
+
+/* Fallback tokens; <ThemeProvider> overwrites these on the root element the
+   moment it mounts, and again whenever the player changes rooms. */
+:root {
+  --bg: #1a120c;
+  --panel: #241811;
+  --panel2: #2e2016;
+  --line: #3d2c1d;
+  --ink: #ede3d4;
+  --mut: #b39c85;
+  --accent: #d18a4f;
+  --felt: #20150e;
+  --glow: #ffb469;
+  --backing: #3a281a;
+  --shadow: 0 14px 30px rgba(0, 0, 0, 0.45);
+  --shadow-sm: 0 6px 14px rgba(0, 0, 0, 0.35);
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
+  -webkit-font-smoothing: antialiased;
+  transition: background 0.35s ease, color 0.35s ease;
+  overscroll-behavior-y: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+button {
+  font-family: inherit;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* The lamp: a soft pool of light over the whole room. */
+.gambit-room {
+  min-height: 100dvh;
+  background:
+    radial-gradient(120% 60% at 50% -10%, color-mix(in srgb, var(--glow) 12%, transparent), transparent 60%),
+    var(--bg);
+}
+
+.gambit-felt {
+  background:
+    radial-gradient(90% 60% at 50% 0%, color-mix(in srgb, var(--glow) 10%, transparent), transparent 65%),
+    var(--felt);
+}
+
+.gambit-mini {
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--ink);
+  border-radius: 8px;
+  padding: 7px 12px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.gambit-mini:hover {
+  border-color: var(--accent);
+}
+.gambit-mini:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+/* Idle tables breathe. Turn holders glow. */
+@keyframes gambit-breathe {
+  0%, 100% { transform: scale(1); opacity: 0.85; }
+  50% { transform: scale(1.012); opacity: 1; }
+}
+.gambit-breathe {
+  animation: gambit-breathe 5.5s ease-in-out infinite;
+}
+
+@keyframes gambit-turn-glow {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 55%, transparent); }
+  50% { box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent) 0%, transparent); }
+}
+.gambit-turn {
+  animation: gambit-turn-glow 2.2s ease-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

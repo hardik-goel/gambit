@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+      - name: Typecheck every package
+        run: pnpm -r typecheck
+
+      - name: Unit, property and integration tests
+        run: pnpm test
+
+      - name: Build
+        run: pnpm --filter @gambit/web build
+
+      # Two real clients, a real server: seats, SSE, redaction, reconnect,
+      # idempotency and replay.
+      - name: End-to-end table
+        run: pnpm exec tsx scripts/e2e.ts
+
+  simulate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+      # Every launch game must finish a large bot-versus-bot batch with no stuck
+      # tables, no illegal moves and no broken invariants.
+      - name: Bot simulations
+        run: pnpm exec tsx scripts/sim-all.ts

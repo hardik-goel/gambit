@@ -1,0 +1,58 @@
+# Legal position
+
+Gambit ships eleven games. Several are **mechanically inspired** by well-known
+commercial board games. This document states the line we hold and how we hold it.
+
+## The principle
+
+Game **mechanics, systems and rules are not protectable** by copyright. What *is*
+protected — and what we never touch — is **names, trademarks, boards, maps, card
+and tile art, characters, box design and overall trade dress**.
+
+So: a game where you spend coloured cards to claim rail routes between cities is
+a mechanic. *That* game's name, its map of Europe, its exact route layout, its
+card illustrations and its logo are someone else's property. We implement the
+first and originate the second, entirely.
+
+## Per-game position
+
+| Players may recognise | Ships as | Original in Gambit | Never used |
+|---|---|---|---|
+| Ticket to Ride | **Boxcar** | name; all three maps (city sets, coordinates, route graphs, ticket sets); card and board art | the original name, its published maps, its art |
+| Catan | **Landfall** | name; island art; card and board design; all naming of resources | the original name, board art, card art |
+| Sequence | **Quintet** | name; board art and layout treatment | the original name and board design |
+| Scotland Yard | **Phantom** | name; the entire 120-node city graph; character treatment | the original name, its London map, its characters |
+| Cluedo / Clue | **Motive** | name; six suspects, six implements, nine rooms — all newly written; mansion layout | the original name, characters, rooms, weapons |
+| Carcassonne | **Hamlet** | name; tile art and the tile distribution we author | the original name, tile art |
+| Azul | **Mosaic** | name; tile designs and wall pattern art | the original name, tile art |
+| Splendor | **Facet** | name; card art, gem treatment, noble art | the original name, card art |
+| Risk | **Stronghold** | name; a wholly original 42-territory world map and region set | the original name, its map |
+| Pandemic | **Remedy** | name; 48-city network, four afflictions, five roles — all newly written | the original name, roles, city network, art |
+| Chess | **Chess** | nothing needs to be — the game is public domain | — |
+
+## Rules we work to
+
+1. **Never** use a left-column name in product copy, code identifiers, marketing,
+   store listings, support articles, or commit messages.
+2. Every map, board, tile, card, token and icon is authored for Gambit or comes
+   from a CC0/public-domain source recorded in `CREDITS.md`.
+3. Rule text in the app is written in our own words. We do not reproduce
+   published rulebooks.
+4. Comparative statements ("if you like X, try Boxcar") are avoided in product
+   surfaces. Nominative comparison is legally defensible but commercially
+   pointless and invites disputes we gain nothing from winning.
+5. Public-domain games (Chess, and any others added later) are labelled as such.
+
+## Audio and music
+
+All sound effects are synthesised at runtime from oscillators and filtered noise
+(`packages/ui/src/audio.ts`) — original by construction, with no sample library
+in the dependency chain. Music loops are generated the same way. Players may add
+their own local audio files; those are read as object URLs on the device and are
+**never uploaded**, so no licensed recording ever touches our servers.
+
+## Data protection (DPDP)
+
+We collect a display name and a random player id. Accounts, when enabled, add an
+email address. Export and delete-account endpoints ship from day one. Game event
+logs are retained for replay and anti-cheat and are deleted with the account.

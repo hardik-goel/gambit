@@ -1,0 +1,11 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "paths": {
+      "@gambit/sdk": ["../sdk/src/index.ts"],
+      "@gambit/core": ["../core/src/index.ts"]
+    }
+  },
+  "include": ["src"]
+}

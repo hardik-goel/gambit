@@ -1,0 +1,58 @@
+/**
+ * The shelf, in code.
+ *
+ * This file is the entire cost of adding a game to Gambit: import the package,
+ * add it to CATALOG. Nothing in `core`, `ui` or `apps/web` changes — see
+ * ADDING_A_GAME.md.
+ */
+import type { AnyGameDefinition } from "@gambit/sdk";
+import chess from "@gambit/game-chess";
+
+export const CATALOG: Record<string, AnyGameDefinition> = {
+  chess
+};
+
+/** Shelf order — how the boxes stand on the plank. */
+export const SHELF_ORDER = [
+  "chess",
+  "boxcar",
+  "landfall",
+  "quintet",
+  "phantom",
+  "motive",
+  "hamlet",
+  "mosaic",
+  "facet",
+  "stronghold",
+  "remedy"
+];
+
+export const GAME_IDS = SHELF_ORDER.filter((id) => id in CATALOG);
+
+export function getGame(id: string): AnyGameDefinition | null {
+  return CATALOG[id] ?? null;
+}
+
+/** Everything the Shelf needs to draw a box spine, derived from the games. */
+export function shelfEntries() {
+  return GAME_IDS.map((id) => {
+    const g = CATALOG[id]!;
+    return {
+      id,
+      name: g.meta.name,
+      tagline: g.meta.tagline,
+      blurb: g.meta.blurb,
+      players:
+        g.meta.minPlayers === g.meta.maxPlayers
+          ? String(g.meta.minPlayers)
+          : `${g.meta.minPlayers}–${g.meta.maxPlayers}`,
+      minutes: g.meta.avgMinutes,
+      complexity: g.meta.complexity,
+      badges: g.meta.badges,
+      hue: g.meta.themeTokens.hue,
+      felt: g.meta.themeTokens.felt,
+      minPlayers: g.meta.minPlayers,
+      maxPlayers: g.meta.maxPlayers
+    };
+  });
+}
