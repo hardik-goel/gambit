@@ -52,6 +52,12 @@
       ],
       "@gambit/game-motive": [
         "../../packages/games/motive/src/index.ts"
+      ],
+      "@gambit/game-landfall": [
+        "../../packages/games/landfall/src/index.ts"
+      ],
+      "@gambit/game-remedy": [
+        "../../packages/games/remedy/src/index.ts"
       ]
     },
     "allowJs": true,

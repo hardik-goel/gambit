@@ -32,6 +32,12 @@
       ],
       "@gambit/game-motive": [
         "../motive/src/index.ts"
+      ],
+      "@gambit/game-landfall": [
+        "../landfall/src/index.ts"
+      ],
+      "@gambit/game-remedy": [
+        "../remedy/src/index.ts"
       ]
     }
   },

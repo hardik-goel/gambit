@@ -35,6 +35,9 @@ importers:
       '@gambit/game-hamlet':
         specifier: workspace:*
         version: link:../../packages/games/hamlet
+      '@gambit/game-landfall':
+        specifier: workspace:*
+        version: link:../../packages/games/landfall
       '@gambit/game-mosaic':
         specifier: workspace:*
         version: link:../../packages/games/mosaic
@@ -47,6 +50,9 @@ importers:
       '@gambit/game-quintet':
         specifier: workspace:*
         version: link:../../packages/games/quintet
+      '@gambit/game-remedy':
+        specifier: workspace:*
+        version: link:../../packages/games/remedy
       '@gambit/game-stronghold':
         specifier: workspace:*
         version: link:../../packages/games/stronghold
@@ -207,6 +213,28 @@ importers:
         specifier: ^5.7.3
         version: 5.9.3
 
+  packages/games/landfall:
+    dependencies:
+      '@gambit/sdk':
+        specifier: workspace:*
+        version: link:../../sdk
+      framer-motion:
+        specifier: ^11.15.0
+        version: 11.18.2(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      zod:
+        specifier: ^3.24.1
+        version: 3.25.76
+    devDependencies:
+      '@types/react':
+        specifier: ^19.0.7
+        version: 19.2.18
+      react:
+        specifier: ^19.0.0
+        version: 19.2.8
+      typescript:
+        specifier: ^5.7.3
+        version: 5.9.3
+
   packages/games/mosaic:
     dependencies:
       '@gambit/sdk':
@@ -309,6 +337,9 @@ importers:
       '@gambit/game-hamlet':
         specifier: workspace:*
         version: link:../hamlet
+      '@gambit/game-landfall':
+        specifier: workspace:*
+        version: link:../landfall
       '@gambit/game-mosaic':
         specifier: workspace:*
         version: link:../mosaic
@@ -321,6 +352,9 @@ importers:
       '@gambit/game-quintet':
         specifier: workspace:*
         version: link:../quintet
+      '@gambit/game-remedy':
+        specifier: workspace:*
+        version: link:../remedy
       '@gambit/game-stronghold':
         specifier: workspace:*
         version: link:../stronghold
@@ -328,6 +362,28 @@ importers:
         specifier: workspace:*
         version: link:../../sdk
     devDependencies:
+      typescript:
+        specifier: ^5.7.3
+        version: 5.9.3
+
+  packages/games/remedy:
+    dependencies:
+      '@gambit/sdk':
+        specifier: workspace:*
+        version: link:../../sdk
+      framer-motion:
+        specifier: ^11.15.0
+        version: 11.18.2(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      zod:
+        specifier: ^3.24.1
+        version: 3.25.76
+    devDependencies:
+      '@types/react':
+        specifier: ^19.0.7
+        version: 19.2.18
+      react:
+        specifier: ^19.0.0
+        version: 19.2.8
       typescript:
         specifier: ^5.7.3
         version: 5.9.3

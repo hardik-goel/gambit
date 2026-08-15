@@ -28,7 +28,9 @@
     "@gambit/game-hamlet": "workspace:*",
     "@gambit/game-stronghold": "workspace:*",
     "@gambit/game-phantom": "workspace:*",
-    "@gambit/game-motive": "workspace:*"
+    "@gambit/game-motive": "workspace:*",
+    "@gambit/game-landfall": "workspace:*",
+    "@gambit/game-remedy": "workspace:*"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.0.0",

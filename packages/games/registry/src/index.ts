@@ -15,8 +15,12 @@ import hamlet from "@gambit/game-hamlet";
 import stronghold from "@gambit/game-stronghold";
 import phantom from "@gambit/game-phantom";
 import motive from "@gambit/game-motive";
+import landfall from "@gambit/game-landfall";
+import remedy from "@gambit/game-remedy";
 
 export const CATALOG: Record<string, AnyGameDefinition> = {
+  remedy,
+  landfall,
   motive,
   phantom,
   stronghold,
