@@ -99,6 +99,17 @@ function Table({
   const [intro, setIntro] = useState(snapshot.room.status === "playing");
   const [error, setError] = useState<string | null>(null);
   const [draft, setDraft] = useState("");
+  const [muted, setMuted] = useState<string[]>([]);
+  const [menuFor, setMenuFor] = useState<string | null>(null);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("gambit.muted");
+      if (saved) setMuted(JSON.parse(saved) as string[]);
+    } catch {
+      /* private mode */
+    }
+  }, []);
 
   const { state, play, chat: chatFn } = useTable({
     def,
@@ -158,8 +169,28 @@ function Table({
 
   // Chat arrives on the room channel — which never carries game state — and is
   // echoed back to the sender too, so there is nothing to keep locally.
-  const chat = state.chat;
+  const chat = state.chat.filter((line) => !muted.includes(line.playerId));
   const chatTo = (text: string) => chatFn(text);
+
+  /** Muting is instant and local: you never have to file anything to stop reading someone. */
+  function toggleMute(playerId: string) {
+    const next = muted.includes(playerId) ? muted.filter((id) => id !== playerId) : [...muted, playerId];
+    setMuted(next);
+    try {
+      localStorage.setItem("gambit.muted", JSON.stringify(next));
+    } catch {
+      /* private mode */
+    }
+  }
+
+  async function report(subjectId: string) {
+    await fetch(`/api/rooms/${room.id}/report`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ subjectId, reason: "abuse" })
+    });
+    setError("Reported. Thanks — we read these.");
+  }
 
   async function act(body: Record<string, unknown>) {
     const res = await fetch(`/api/rooms/${room.id}/action`, {
@@ -321,10 +352,16 @@ function Table({
                   color: active ? "var(--accent)" : "var(--mut)",
                   background: s.id === state.seat ? "var(--panel)" : "transparent"
                 }}
+                title={s.isBot || s.id === state.seat ? undefined : "Tap to mute or report"}
+                onClick={() => {
+                  if (s.isBot || s.id === state.seat) return;
+                  setMenuFor(menuFor === s.playerId ? null : s.playerId);
+                }}
               >
                 {s.name}
                 {s.isBot && " · bot"}
                 {s.id === state.seat && " · you"}
+                {muted.includes(s.playerId) && " · muted"}
               </div>
             );
           })}
@@ -364,6 +401,20 @@ function Table({
               }).catch(() => setError("Couldn't build the share card."))
             }
           />
+        )}
+
+        {menuFor && (
+          <div style={{ display: "flex", gap: 8, justifyContent: "center", flexWrap: "wrap" }}>
+            <button className="gambit-mini" onClick={() => { toggleMute(menuFor); setMenuFor(null); }}>
+              {muted.includes(menuFor) ? "Unmute" : "Mute"}
+            </button>
+            <button className="gambit-mini" onClick={() => { void report(menuFor); setMenuFor(null); }}>
+              Report
+            </button>
+            <button className="gambit-mini" onClick={() => setMenuFor(null)}>
+              Cancel
+            </button>
+          </div>
         )}
 
         <Panel style={{ padding: 14 }}>
