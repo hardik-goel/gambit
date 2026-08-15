@@ -1,9 +1,14 @@
 # Adding a game
 
 This is the scalability contract. Game #12 requires **zero platform changes**:
-one new package, one line in the registry. If you find yourself editing
-`packages/core`, `packages/ui` or `apps/web` to make a game work, that is a gap
-in the SDK — fix it there and record it in DECISIONS.md.
+one new package, and three registration lines that name it (§4). If you find
+yourself editing anything else in `packages/core`, `packages/ui` or `apps/web`
+to make a game work, that is a gap in the SDK — fix it there and record it in
+DECISIONS.md.
+
+Eleven games have been through this path. The SDK gaps they found — the
+pending-input stack, the `__at` clock stamp, `predict` for optimistic play — are
+in the SDK now, which is why the eleventh took the same shape as the first.
 
 ## 1. Scaffold
 
@@ -61,16 +66,32 @@ modelled as a stack of `PendingInput` on the state. While the stack is non-empty
 
 ## 4. Register it
 
+Three lines and a generated file — no platform code changes.
+
 ```ts
 // packages/games/registry/src/index.ts
 import mygame from "@gambit/game-mygame";
-export const CATALOG = { chess, mygame };
+export const CATALOG = { chess, …, mygame };   // 1. the server catalogue
+export const SHELF_ORDER = [ …, "mygame" ];     // 2. where it stands on the plank
 ```
 
-Add the id to `SHELF_ORDER`. That is the entire platform change: the box appears
-on the shelf, the lobby generates its options panel from `configSchema`, the
-table renders `Board`, and the move pipeline, redaction, reconnect, replay,
-bots, timeouts, chat, share cards and audio all work already.
+```ts
+// apps/web/lib/games.client.ts
+const loaders = { …, mygame: () => import("@gambit/game-mygame") };  // 3. its own chunk
+```
+
+```bash
+pnpm shelf-meta          # regenerates the shelf's metadata; a test enforces it
+pnpm install             # workspace wiring
+```
+
+The third line is what keeps the browser from downloading eleven games to play
+one; `pnpm perf` fails the build if the shelf ever starts carrying game data.
+
+That is the entire platform change. The box appears on the shelf, the lobby
+generates its options panel from `configSchema`, the table renders `Board`, and
+the move pipeline, redaction, reconnection, replay, bots, timeouts, chat, share
+cards, ratings, quick match and audio all work already.
 
 ## 5. Pass the test kit
 
@@ -94,9 +115,15 @@ malformed move is rejected rather than thrown at.
 Then, before shipping:
 
 ```
-pnpm sim <id> --games 500 --level 1
-pnpm sim <id> --games 200 --seats <max>
+pnpm sim <id> --games 500 --level 1     # a deep sweep of one game
+pnpm sim <id> --games 200 --seats <max> # and at a full table
+pnpm sim:all                            # the gate CI runs
 ```
+
+Take the seat-count sweep seriously. Two of the eleven launch games shipped a
+table that could not finish — Boxcar at five seats, where the map ran out before
+the cars did, and one Landfall seed in a hundred where the bot traded itself into
+a corner. Both were found here and nowhere else.
 
 ## 6. Board conventions
 
