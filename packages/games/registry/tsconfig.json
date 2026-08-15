@@ -38,6 +38,9 @@
       ],
       "@gambit/game-remedy": [
         "../remedy/src/index.ts"
+      ],
+      "@gambit/ui": [
+        "../../ui/src/index.ts"
       ]
     }
   },

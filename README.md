@@ -27,7 +27,7 @@ the same network — that is the whole same-room flow.
 ## Layout
 
 ```
-apps/web                 Next.js app: shelf, tables, the move pipeline's HTTP face
+apps/web                 Next.js app: shelf, tables, tutorials, replay theatre
 packages/sdk             the game contract + the test kit every game must pass
 packages/core            rooms, moves, redaction, transport ports, replay, client
 packages/ui              themes, audio engine, the Shelf, share cards, primitives
@@ -39,15 +39,20 @@ supabase/migrations      production schema, RLS on every table
 ## Test
 
 ```bash
-pnpm test                       # unit, property and integration tests
-pnpm sim chess --games 500      # bot-versus-bot, must finish clean
-pnpm exec tsx scripts/e2e.ts    # two real clients against a real server
+pnpm test                  # unit, property and integration tests (216 of them)
+pnpm sim chess --games 500 # bot-versus-bot for one game, must finish clean
+pnpm sim:all               # every game, at both ends of its seat range
+pnpm e2e                   # two real clients against a real server
+pnpm perf                  # first-load budget, and the shelf carries no game
 ```
 
 The test kit gives every game three passes for free: property checks (no seat
 ever stuck, no state mutated, no redaction leak), a bot-versus-bot simulator, and
-golden replays. Chess additionally verifies its move generator against known
-perft counts to depth four.
+golden replays. On top of that each game brings its own: Chess verifies its move
+generator against known perft counts to depth four, Boxcar checks every ticket on
+every map is solvable and priced within a point of its shortest path, and Phantom
+and Motive assert that the fugitive's position and the case file never appear in
+a payload sent to anyone who should not have them.
 
 ## Production
 

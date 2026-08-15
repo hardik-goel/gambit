@@ -95,6 +95,8 @@ export interface BoxcarState extends BaseState {
   finalLap: boolean;
   /** Turns left once the final lap starts. */
   finalTurns: number;
+  /** Consecutive turns where a player could do nothing at all. */
+  passStreak: number;
   finished: boolean;
   globetrotter: boolean;
   carsPerPlayer: number;
@@ -175,6 +177,7 @@ export function createState(config: BoxcarConfig, seats: Seat[], seed: string): 
     tunnel: null,
     finalLap: false,
     finalTurns: 0,
+    passStreak: 0,
     finished: false,
     globetrotter: config.globetrotter,
     carsPerPlayer: Number(config.cars)
@@ -441,6 +444,7 @@ export function applyMove(
       }
 
       hand[card]++;
+      next.passStreak = 0;
       next.drawsLeft = wasMarketLoco ? 0 : next.drawsLeft - 1;
       next.ply++;
       events.push({
@@ -579,6 +583,7 @@ export function applyMove(
       const offer: number[] = [];
       for (let i = 0; i < 3 && next.ticketDeck.length; i++) offer.push(next.ticketDeck.shift()!);
       next.offered[seat] = offer;
+      next.passStreak = 0;
       next.pending.push({
         id: pendingId(next, "keep-tickets", seat),
         seat,
@@ -611,6 +616,7 @@ export function applyMove(
       for (let i = 0; i < coloured; i++) next.discard.push(colour);
       for (let i = 0; i < locos; i++) next.discard.push("loco");
       next.stationsLeft[seat]!--;
+      next.passStreak = 0;
       next.stationCities[seat] = [...(next.stationCities[seat] ?? []), city];
       next.ply++;
       events.push({
@@ -629,8 +635,22 @@ export function applyMove(
         return err("can-move", "You still have something you can do.");
       }
       next.drawsLeft = 0;
+      next.passStreak = state.passStreak + 1;
       next.ply++;
       events.push({ type: "pass", seat, text: `${next.names[seat]} can do nothing and passes.` });
+
+      // Every route claimed, both decks empty, no tickets left: at a full table
+      // the map can run out before the cars do. When a whole lap of players can
+      // do nothing at all, the line is finished and the game is scored.
+      if (next.passStreak >= next.seatCount) {
+        next.finished = true;
+        events.push({
+          type: "game-end",
+          text: "There is nothing left to build. The line is complete.",
+          sfx: "score"
+        });
+        return ok({ state: next, events });
+      }
       endTurn(next, seat, events);
       return ok({ state: next, events });
     }
@@ -647,6 +667,7 @@ function cityName(state: BoxcarState, key: string): string {
 function finishClaim(state: BoxcarState, seat: SeatId, routeId: number, events: GameEvent[]): void {
   const route = mapOf(state).routes[routeId]!;
   state.claims[routeId] = seat;
+  state.passStreak = 0;
   state.cars[seat]! -= route.len;
   const points = routePoints(route.len);
   state.routeScore[seat]! += points;

@@ -17,6 +17,7 @@ import {
   useAudio,
   type ShelfGame
 } from "@gambit/ui";
+import { addAnalyticsSink, track } from "@gambit/core";
 
 export function Lobby({ games }: { games: ShelfGame[] }) {
   const router = useRouter();
@@ -28,6 +29,25 @@ export function Lobby({ games }: { games: ShelfGame[] }) {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [code, setCode] = useState("");
   const [name, setName] = useState("");
+  const [waiting, setWaiting] = useState<Record<string, number>>({});
+
+  useEffect(() => {
+    // One sink, added once: the console in development, the endpoint in
+    // production. Nothing in the game ever waits on it.
+    const off = addAnalyticsSink((event) => {
+      if (process.env.NODE_ENV !== "production") {
+        console.debug("[gambit]", event.name, event);
+        return;
+      }
+      void fetch("/api/analytics", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(event),
+        keepalive: true
+      }).catch(() => undefined);
+    });
+    return off;
+  }, []);
 
   useEffect(() => {
     // Mint an identity on first visit so the first tap is already seated.
@@ -35,7 +55,41 @@ export function Lobby({ games }: { games: ShelfGame[] }) {
       .then((r) => r.json())
       .then((me: { name: string }) => setName(me.name))
       .catch(() => undefined);
+
+    // Who is waiting, refreshed while the shelf is open.
+    const poll = () =>
+      void fetch("/api/match")
+        .then((r) => r.json())
+        .then((body: { waiting?: Record<string, number> }) => setWaiting(body.waiting ?? {}))
+        .catch(() => undefined);
+    poll();
+    const timer = setInterval(poll, 8000);
+    return () => clearInterval(timer);
   }, []);
+
+  async function quickMatch(gameId: string) {
+    if (busy) return;
+    setBusy(true);
+    try {
+      const res = await fetch("/api/match", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ gameId })
+      });
+      const body = (await res.json()) as {
+        room?: { code: string };
+        waitingFor?: number;
+        error?: { message: string };
+      };
+      if (!res.ok || !body.room) throw new Error(body.error?.message ?? "No table free just now.");
+      track({ name: "room_created", gameId, mode: "quick" });
+      router.push(`/r/${body.room.code}`);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "No table free just now.");
+    } finally {
+      setBusy(false);
+    }
+  }
 
   async function createRoom(gameId: string, mode: "here" | "online") {
     if (busy) return;
@@ -51,6 +105,7 @@ export function Lobby({ games }: { games: ShelfGame[] }) {
         error?: { message: string };
       };
       if (!res.ok || !body.room) throw new Error(body.error?.message ?? "Couldn't open a table.");
+      track({ name: "room_created", gameId, mode });
       setInvite({ code: body.room.code, id: body.room.id, mode });
     } catch (e) {
       setError(e instanceof Error ? e.message : "Couldn't open a table.");
@@ -148,6 +203,8 @@ export function Lobby({ games }: { games: ShelfGame[] }) {
         onPlayHere={(id) => void createRoom(id, "here")}
         onPlayOnline={(id) => void createRoom(id, "online")}
         onTutorial={(id) => router.push(`/learn/${id}`)}
+        onQuickMatch={(id) => void quickMatch(id)}
+        waiting={waiting}
       />
 
       <Panel style={{ marginTop: 28, padding: 18, display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center" }}>

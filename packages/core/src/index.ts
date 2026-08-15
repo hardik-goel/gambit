@@ -7,4 +7,7 @@ export * from "./engine";
 export * from "./rooms";
 export * from "./client";
 export * from "./replay";
+export * from "./matchmaking";
+export * from "./ratings";
+export * from "./analytics";
 export { MemoryRoomStore } from "./stores/memory";

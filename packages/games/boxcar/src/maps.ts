@@ -162,9 +162,17 @@ export function shortestPath(map: BoxcarMap, from: string, to: string): number {
 
 /**
  * The longest continuous trail through a player's own routes — each route used
- * once, cities revisitable. Depth-first, which is fine because a player's own
- * network is small and sparse.
+ * once, cities revisitable.
+ *
+ * This is the longest-trail problem, which is NP-hard in general. A real
+ * player's network is small and sparse (a car supply of 45 buys about twenty
+ * routes), so an exhaustive depth-first search is both correct and instant. The
+ * step budget exists so that a pathological network — a stress test, a corrupt
+ * state, someone's idea of a joke — degrades into a good answer rather than
+ * hanging the server. It is never reached in a real game.
  */
+export const TRAIL_SEARCH_BUDGET = 400_000;
+
 export function longestTrail(map: BoxcarMap, routeIds: number[]): number {
   const routes = routeIds.map((id) => map.routes[id]!);
   const byCity = new Map<string, number[]>();
@@ -174,17 +182,23 @@ export function longestTrail(map: BoxcarMap, routeIds: number[]): number {
   });
 
   let best = 0;
+  let steps = 0;
   const used = new Set<number>();
   const walk = (city: string, length: number): void => {
     if (length > best) best = length;
+    if (steps++ > TRAIL_SEARCH_BUDGET) return;
     for (const i of byCity.get(city) ?? []) {
       if (used.has(i)) continue;
       const r = routes[i]!;
       used.add(i);
       walk(r.a === city ? r.b : r.a, length + r.len);
       used.delete(i);
+      if (steps > TRAIL_SEARCH_BUDGET) return;
     }
   };
-  for (const city of byCity.keys()) walk(city, 0);
+  for (const city of byCity.keys()) {
+    walk(city, 0);
+    if (steps > TRAIL_SEARCH_BUDGET) break;
+  }
   return best;
 }

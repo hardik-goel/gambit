@@ -34,6 +34,11 @@ jobs:
       - name: End-to-end table
         run: pnpm exec tsx scripts/e2e.ts
 
+      # First-load JavaScript per route, and a check that the shelf never
+      # carries a game's rules or map data.
+      - name: Performance budget
+        run: pnpm exec tsx scripts/perf-budget.ts
+
   simulate:
     runs-on: ubuntu-latest
     timeout-minutes: 45

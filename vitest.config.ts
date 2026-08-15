@@ -21,6 +21,7 @@ export default defineConfig({
       "@gambit/game-motive": r("packages/games/motive/src/index.ts"),
       "@gambit/game-landfall": r("packages/games/landfall/src/index.ts"),
       "@gambit/game-remedy": r("packages/games/remedy/src/index.ts"),
+      "@gambit/games/meta": r("packages/games/registry/src/meta.ts"),
       "@gambit/games": r("packages/games/registry/src/index.ts")
     }
   },

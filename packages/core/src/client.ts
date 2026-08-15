@@ -31,6 +31,8 @@ export interface TableState {
   scores: unknown;
   /** Newest last; the board reads this for choreography, the ticker for text. */
   events: GameEvent[];
+  /** Table talk. Public by definition — it never carries game state. */
+  chat: { playerId: string; name: string; text: string; emote?: string; at: number }[];
   status: ConnectionStatus;
   /** True while a local move is unacknowledged. */
   pending: boolean;
@@ -93,6 +95,7 @@ export class TableClient {
       terminal: false,
       scores: null,
       events: [],
+      chat: [],
       status: "connecting",
       pending: false,
       rejection: null,
@@ -205,6 +208,14 @@ export class TableClient {
       }
       case "room":
         this.set({ room: msg.room });
+        break;
+      case "chat":
+        this.set({
+          chat: [
+            ...this.state.chat,
+            { playerId: msg.playerId, name: msg.name, text: msg.text, emote: msg.emote, at: msg.at }
+          ].slice(-100)
+        });
         break;
       case "finished":
         this.set({ terminal: true, scores: msg.scores });

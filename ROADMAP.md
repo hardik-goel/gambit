@@ -6,15 +6,25 @@
   Rooms, seats, the move pipeline, per-seat redaction, reconnection with event
   replay, bots and timeout takeover, replay theatre, the audio engine, six shell
   themes, the Shelf, share cards, PWA manifest.
+- **Phase B** — Quintet, Mosaic, Facet. Teams, drafting, engine building, and
+  the platform's first interrupts on the pending-input stack.
+- **Phase C** — Boxcar (three maps, tunnels, ferries, stations), Hamlet
+  (union-find features), Stronghold (dice ladder, objectives).
+- **Phase D** — Phantom and Motive: asymmetric roles, hidden movement, private
+  reveals, and the leak tests that prove the redaction firewall holds.
+- **Phase E** — Landfall (trading as a conversation) and Remedy (full co-op,
+  where the board takes a turn too).
+- **Phase F** — quick match, Glicko-lite ratings and leaderboards, eleven
+  tutorials that run the real game on the device, the replay theatre, table
+  chat, analytics, and a CI performance budget with per-game code splitting.
 
 ## Next
 
-- **Phase B** — Quintet, Mosaic, Facet (teams, drafting, engine building).
-- **Phase C** — Boxcar, Hamlet, Stronghold (heavy boards, union-find scoring, dice).
-- **Phase D** — Phantom, Motive (asymmetric roles, private reveals, interrupts).
-- **Phase E** — Landfall, Remedy (trading subsystem, full co-op).
-- **Phase F** — matchmaking, ratings and seasons, eleven tutorials, analytics,
-  perf CI, seed content.
+- **Accounts** — Supabase Auth (email OTP, Google, Apple) replacing the cookie
+  identity; the player id is the only thing that changes (DECISIONS D13).
+- **Seasons** — ratings reset on a cadence, with placements and a ladder page.
+- **Friends and profiles** — recent players, invites, mute, report and block.
+- **Spectator delay** — a 30-second delay on ranked tables.
 
 ## Phase 2 — same-room play with no internet at all
 

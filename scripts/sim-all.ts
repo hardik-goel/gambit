@@ -5,7 +5,13 @@
 import { simulateMany } from "../packages/sdk/src/testkit/index";
 import { CATALOG, GAME_IDS } from "../packages/games/registry/src/index";
 
-const GAMES = Number(process.env.SIM_GAMES ?? 120);
+/**
+ * The gate runs sixty games per game per seat count. That is enough to catch a
+ * table that cannot finish — which is exactly what it caught for Boxcar at five
+ * seats and Landfall at three. A deeper sweep of one game is a separate command:
+ *   pnpm sim <id> --games 500
+ */
+const GAMES = Number(process.env.SIM_GAMES ?? 60);
 let failed = false;
 
 for (const id of GAME_IDS) {

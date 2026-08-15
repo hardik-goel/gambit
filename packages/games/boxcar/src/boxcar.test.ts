@@ -344,6 +344,42 @@ describe("boxcar as a Gambit game", () => {
     }
   });
 
+  it("ends when the map runs out before the cars do", () => {
+    // Five players on a 59-route map can claim the lot while everyone still has
+    // cars in hand. When a whole lap can do nothing, the line is finished.
+    const state = drafted(makeBotSeats(5), config, "exhausted");
+    const map = mapOf(state);
+    // Spread the claims round the table the way a real game would.
+    map.routes.forEach((route, i) => {
+      state.claims[route.id] = i % 5;
+    });
+    state.deck = [];
+    state.discard = [];
+    state.market = [null, null, null, null, null];
+    state.ticketDeck = [];
+    for (const seat of [0, 1, 2, 3, 4]) state.stationsLeft[seat] = 0;
+    state.turn = 0;
+
+    let current = state;
+    for (let i = 0; i < 5; i++) {
+      const legal = boxcar.legalMoves(current, current.turn);
+      expect(legal.map((m) => m.kind)).toEqual(["pass"]);
+      const res = boxcar.applyMove(current, current.turn, { kind: "pass" });
+      expect(res.ok).toBe(true);
+      if (!res.ok) return;
+      current = res.value.state;
+      if (current.finished) break;
+    }
+    expect(current.finished).toBe(true);
+    // And it still scores properly rather than just stopping.
+    expect(boxcar.score(current)).toHaveLength(5);
+  });
+
+  it("finishes bot games at a full table, where the map is the constraint", () => {
+    const batch = simulateMany(boxcar, 6, { seats: 5, level: 1, maxPly: 6000 });
+    expect(batch.failures.map((f) => f.error ?? "did not terminate")).toEqual([]);
+  });
+
   it("replays exactly", () => {
     const sim = simulate(boxcar, { seats: 2, level: 2, seed: "replay", config: { cars: "20" } });
     expect(sim.error).toBeUndefined();

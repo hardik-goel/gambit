@@ -36,6 +36,27 @@ export function cornerValue(view: LandfallView, vertex: number): number {
 const shortfall = (view: LandfallView, cost: Partial<Record<Resource, number>>): number =>
   RESOURCES.reduce((n, r) => n + Math.max(0, (cost[r] ?? 0) - view.hand[r]), 0);
 
+/**
+ * What this player is building towards next.
+ *
+ * Early on that is a road and then a settlement, because a settlement is a
+ * point and more production; once the network is out, cities are the cheaper
+ * points per card.
+ */
+function nextBuildCost(view: LandfallView): Partial<Record<Resource, number>> {
+  const seat = view.seat === "spectator" ? view.turn : view.seat;
+  const mine = Object.values(view.buildings).filter((b) => b.seat === seat);
+  const settlements = mine.filter((b) => b.type === "settlement").length;
+  const roads = Object.values(view.roads).filter((r) => r === seat).length;
+
+  // A settlement needs somewhere to go, which usually means a road first.
+  if (settlements >= 1 && roads < settlements * 2 + 1) {
+    return { wood: 1, brick: 1, grain: 1, wool: 1 };
+  }
+  if (settlements >= 2) return { ore: 3, grain: 2 };
+  return { wood: 1, brick: 1, grain: 1, wool: 1 };
+}
+
 export function bot(view: LandfallView, legal: LandfallMove[], rng: Rng, level: BotLevel): LandfallMove {
   if (legal.length <= 1) return legal[0]!;
   const seat = view.seat === "spectator" ? view.turn : view.seat;
@@ -91,11 +112,15 @@ export function bot(view: LandfallView, legal: LandfallMove[], rng: Rng, level: 
       case "play-roads":
         return 14;
       case "bank-trade": {
-        // Trade away a surplus for something a build is short of.
+        // Trade towards the next thing you actually want to build, and never
+        // trade away something you are already short of. Getting this wrong is
+        // how a bot spends nine hundred turns swapping wood for ore and never
+        // laying a road.
+        const want = nextBuildCost(view);
+        const shortOfGet = Math.max(0, (want[move.get] ?? 0) - view.hand[move.get]);
+        const shortOfGive = Math.max(0, (want[move.give] ?? 0) - (view.hand[move.give] - view.rates[move.give]));
         const surplus = view.hand[move.give] - view.rates[move.give];
-        const needed =
-          shortfall(view, { ore: 3, grain: 2 }) > 0 && (move.get === "ore" || move.get === "grain");
-        return 6 + surplus * 0.6 + (needed ? 4 : 0);
+        return 5 + shortOfGet * 6 - shortOfGive * 8 + Math.min(surplus, 4) * 0.4;
       }
       case "offer":
         // Worth one ask when short of something specific; never worth stalling

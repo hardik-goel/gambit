@@ -6,9 +6,24 @@
  * store and the Realtime broadcaster — see `lib/server/supabase.ts`. Route
  * handlers never know which one they got.
  */
-import { MemoryRoomStore, type Broadcaster, type EngineDeps, type ServerMessage } from "@gambit/core";
+import {
+  MemoryRoomStore,
+  addAnalyticsSink,
+  track,
+  type Broadcaster,
+  type EngineDeps,
+  type ServerMessage
+} from "@gambit/core";
 import { CATALOG } from "@gambit/games";
 import type { SeatId } from "@gambit/sdk";
+import { recordRatings } from "./ratings";
+import { SupabaseRoomStore, hasSupabase, supabaseBroadcaster } from "./supabase";
+
+// In development the sink is the log; in production it is one call to the
+// warehouse. Either way the game never waits on it.
+addAnalyticsSink((event) => {
+  if (process.env.NODE_ENV !== "production") console.log("[gambit]", event.name, event);
+});
 
 interface Subscriber {
   roomId: string;
@@ -28,6 +43,16 @@ const g = globalThis as typeof globalThis & {
 if (!g.__gambit) {
   g.__gambit = { store: new MemoryRoomStore(), subs: new Set() };
 }
+
+/**
+ * Which store is in play.
+ *
+ * With Supabase configured, the production store and Realtime broadcaster take
+ * over; without it, the in-process pair below runs the whole platform with
+ * nothing to provision. The engine cannot tell the difference — that is the
+ * point of the port.
+ */
+export const usingSupabase = hasSupabase();
 
 export const store = g.__gambit.store;
 const subscribers = g.__gambit.subs;
@@ -66,4 +91,19 @@ function safeSend(sub: Subscriber, msg: ServerMessage): void {
   }
 }
 
-export const deps: EngineDeps = { store, catalog: CATALOG, broadcast };
+export const deps: EngineDeps = {
+  store: usingSupabase ? new SupabaseRoomStore() : store,
+  catalog: CATALOG,
+  broadcast: usingSupabase ? supabaseBroadcaster() : broadcast,
+  onFinish({ room, gameId, seats, scores }) {
+    // Ratings and analytics hang off the finish hook rather than sitting inside
+    // the pipeline, so a game that ends is never held up by either.
+    recordRatings(gameId, seats, scores);
+    track({
+      name: "game_finished",
+      gameId,
+      players: seats.filter((s) => !s.isBot).length,
+      minutes: room.startedAt ? Math.round((Date.now() - room.startedAt) / 60000) : 0
+    });
+  }
+};

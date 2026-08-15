@@ -96,6 +96,9 @@ written extensionless throughout.
 it will not be, and the Board import becomes a `next/dynamic` per game id. Noted
 here so it is a scheduled change rather than a surprise.
 
+**Superseded by D33** in Phase F: the shelf renders from generated metadata and
+each game loads as its own chunk, enforced by `scripts/perf-budget.ts`.
+
 ### D13 · Identity before accounts
 
 A player is a cookie-borne random id plus a display name — enough to be seated in
@@ -114,3 +117,168 @@ Level 1 searches depth 2 with a 6,000-node ceiling and up to a third of a pawn o
 noise; level 2 depth 3; level 3 depth 4 with no noise. The ceilings exist so that
 a table never waits on a bot and so five hundred bot-versus-bot simulations
 finish in minutes rather than hours.
+
+---
+
+## Phase B — Quintet, Mosaic, Facet
+
+### D16 · Generated boards beat transcribed ones
+
+Quintet's ten-by-ten layout is generated from a fixed seed with a repair pass
+that keeps a card's two faces at least four squares apart; Phantom's city,
+Landfall's island and Remedy's world are built the same way. Three reasons: the
+layouts are provably ours (see LEGAL.md), the topology is correct by
+construction rather than by proofreading, and a constraint like "no two hot
+numbers adjacent" is enforced rather than hoped for.
+
+The seeds are frozen strings. Changing one changes the board for everybody, so
+they are versioned in the name: `gambit-quintet-board-v1`.
+
+### D17 · Interrupts run on one stack, in the SDK
+
+Facet's ten-token cap and its two-patrons-at-once choice were the first real
+interrupts. Rather than let each game invent its own, `pendingInput` is part of
+`BaseState`, `currentSeats` returns the prompted seat while the stack is
+non-empty, and the platform needs no game-specific knowledge to route it. Every
+later interrupt — Boxcar's tunnels, Motive's disprove, Landfall's seven, the
+Remedy courier's request — is the same mechanism.
+
+### D18 · One patron per turn
+
+Two patrons qualifying at once is a choice, not two visits. `nobleThisTurn`
+gates it. Found by a test that expected 3 prestige and got 6.
+
+---
+
+## Phase C — Boxcar, Hamlet, Stronghold
+
+### D19 · Tunnel payments are held aside, not discarded
+
+Paying for a tunnel and then revealing three cards can reshuffle the discard
+into the deck — and with it the cards you just paid. Withdrawing then handed
+the player cards that no longer existed anywhere, and the deck grew by four.
+The payment now sits in the tunnel record until the mountain has spoken, which
+is also how it works on a table. The card-conservation invariant counts it.
+
+### D20 · Claim payments offer the fewest wilds
+
+Enumerating every colour-and-locomotive split for every route would put
+thousands of moves in a payload. `legalMoves` offers, per colour, the payment
+that spends the fewest locomotives (respecting a ferry's minimum), because
+spending more wilds than a route demands is never better. Players who want to
+burn a locomotive anyway can — `applyMove` accepts it; it simply isn't offered.
+
+### D21 · Hamlet's fields are per-tile regions
+
+Full field topology — two half-fields per edge, split by roads — is a large
+amount of machinery for a small amount of game. A tile's field is one region,
+joined across edges, scoring three per completed keep it touches. Documented
+here because it is a deliberate simplification of the genre, not an oversight.
+
+### D22 · Stronghold has a sundown rule
+
+Conquest games between cautious players can stall forever: everyone digs in and
+nobody attacks. After a dozen turns each with nothing changing hands, the widest
+holding takes it. Real games effectively never reach it; it exists so that no
+online table can hang. The bots also grow bolder as their share of the armies
+grows, which is the fix for the cause rather than the symptom.
+
+---
+
+## Phase D — Phantom, Motive
+
+### D23 · The fugitive's node is in exactly one payload
+
+`redactStateFor` substitutes the last *sighting* for the fugitive's position for
+every viewer except the fugitive — and, once the game is over, everybody. The
+leak test plays a dozen rounds and then asserts the node appears in no
+detective's and no spectator's serialised view. This is the game the platform's
+redaction promise is measured against.
+
+### D24 · Two nodes can be joined by two kinds of line
+
+The transport must be matched as well as the destination. A cab and a tram
+between the same pair used to make `legalMoves` and `applyMove` disagree —
+found by the property harness, not by a person.
+
+### D25 · Motive publishes the record of every suggestion
+
+Who asked, what they named, who passed and who answered are all public at a real
+table, and they are the raw material of every deduction. Keeping that log in the
+state (and the view) is what lets the bots — and the notepad — reason properly.
+
+### D26 · Motive offers only accusations you haven't disproved
+
+Six suspects by six implements by nine rooms is 324 moves. `legalMoves` filters
+by what that seat can already prove is not in the file — its own cards, what it
+has been shown, the face-up leftovers — which is information the player already
+has, so nothing leaks and the payload stays small.
+
+### D27 · The night ends
+
+Forty rounds and the file is opened unsolved. Cautious players would otherwise
+circle forever, and an online table cannot be left open overnight.
+
+---
+
+## Phase E — Landfall, Remedy
+
+### D28 · Island geometry is derived, then deduplicated by position
+
+Hex corners reached from two different hexes differ in the sixteenth decimal —
+and, worse, in the sign of a zero. Rounding to a thousandth and normalising -0
+away made 56 corners become the 54 the board actually has.
+
+### D29 · You can only accept a trade you can pay for
+
+Checked when the offer is answered, not when it is closed. Doing it at the close
+would have let the offerer learn what you were holding from what you were
+allowed to answer.
+
+### D30 · A turn cannot be haggled away
+
+Two offers a turn, and the bot values a trade below ending its turn unless it is
+short of something specific. Without both, three bots traded with each other
+until the heat death of the universe.
+
+### D31 · The robber blocks everything until it is placed
+
+While a robber prompt is open, that seat's only legal moves are placements. The
+first draft let a player end their turn with the prompt still open, which
+stranded the table on a seat whose turn had passed.
+
+### D32 · Asking costs the action
+
+Remedy's courier spends the action when they ask, not when the answer comes
+back. Otherwise a refusal is free and the courier asks again forever.
+
+---
+
+## Phase F — product
+
+### D33 · The shelf never ships a game
+
+`packages/games/registry/src/meta.ts` is generated from the catalogue and holds
+names, taglines, hues and player counts — no rules, no maps, no boards. The
+lobby imports that; tables import the one game they need through
+`lib/games.client.ts`, which the bundler splits per game. `scripts/perf-budget.ts`
+enforces both the first-load budget and the rule that no shelf chunk contains
+game data. This resolves D12.
+
+### D34 · Ratings are Glicko-lite, multiplayer as a round robin
+
+A rating, a deviation that grows with idleness and shrinks with play, and no
+volatility term — the part of Glicko-2 that earns its keep below a very large
+scale. A five-player table is scored as every pair against each other, which
+gives sensible numbers without inventing new mathematics.
+
+### D35 · Quick match fills the fullest table
+
+Rather than spreading players across half-empty rooms. Same-room tables are
+never offered to strangers.
+
+### D36 · The tutorial is the real game
+
+`/learn/[gameId]` runs the actual `createState`, `legalMoves` and `Board`
+against the game's own bot, on the device. A scripted mock-up would drift out of
+step with the rules the first time a rule changed; this cannot.

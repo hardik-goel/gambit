@@ -29,6 +29,12 @@ export interface EngineDeps {
   catalog: Record<string, AnyGameDefinition>;
   broadcast: Broadcaster;
   now?: () => number;
+  /**
+   * Called once a table finishes, with the seats and the final scores. This is
+   * where ratings and analytics hang off the pipeline without the pipeline
+   * knowing that either of them exists.
+   */
+  onFinish?: (input: { room: Room; gameId: string; seats: Seat[]; scores: FinalScore[] }) => void;
 }
 
 const nowOf = (deps: EngineDeps) => deps.now?.() ?? Date.now();
@@ -291,6 +297,11 @@ export async function finishGame(
     finishedAt: at
   });
   deps.broadcast.toRoom(room.id, { type: "finished", scores });
+  try {
+    deps.onFinish?.({ room, gameId: room.gameId, seats: seatsFromRoom(room), scores });
+  } catch {
+    // Ratings and analytics must never be able to break a finished game.
+  }
   return scores;
 }
 

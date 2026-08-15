@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { Rng } from "@gambit/sdk";
 import { checkProperties, makeBotSeats, replay, simulate, simulateMany } from "@gambit/sdk/testkit";
 import landfall from "./index";
 import { DEV_BAG, EDGES, HEXES, NUMBER_BAG, TERRAIN_BAG, VERTICES, edgesAt } from "./island";
@@ -289,6 +290,27 @@ describe("landfall as a Gambit game", () => {
       const batch = simulateMany(landfall, 6, { seats, level: 2, maxPly: 8000 });
       expect(batch.failures.map((f) => f.error), `${seats} seats`).toEqual([]);
     }
+  });
+
+  it("trades towards what it is building, not away from it", () => {
+    // The bug this covers: a bot with wood and no brick traded the wood away
+    // for ore, and then spent nine hundred turns unable to lay a road.
+    const state = opened();
+    state.turn = 0;
+    state.phase = "main";
+    state.hands[0] = { wood: 4, grain: 0, wool: 0, brick: 0, ore: 0 };
+    const view = landfall.redactStateFor(state, 0) as LandfallView;
+    const trades = landfall
+      .legalMoves(state, 0)
+      .filter((m): m is Extract<typeof m, { kind: "bank-trade" }> => m.kind === "bank-trade");
+    expect(trades.length).toBeGreaterThan(0);
+
+    const rng = new Rng("trade-choice");
+    const chosen = landfall.bot(view, trades, rng, 2);
+    expect(chosen.kind).toBe("bank-trade");
+    if (chosen.kind !== "bank-trade") return;
+    // It should be buying a road's missing half, not something for later.
+    expect(["brick", "grain", "wool"]).toContain(chosen.get);
   });
 
   it("replays exactly, dice and all", () => {

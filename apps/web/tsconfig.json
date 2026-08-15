@@ -58,6 +58,9 @@
       ],
       "@gambit/game-remedy": [
         "../../packages/games/remedy/src/index.ts"
+      ],
+      "@gambit/games/meta": [
+        "../../packages/games/registry/src/meta.ts"
       ]
     },
     "allowJs": true,

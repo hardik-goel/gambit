@@ -9,7 +9,9 @@
 import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import type { ClientSnapshot, Room } from "@gambit/core";
-import { CATALOG } from "@gambit/games";
+import type { AnyGameDefinition } from "@gambit/sdk";
+import { loadGame } from "@/lib/games.client";
+import { track } from "@gambit/core";
 import type { FinalScore, Seat } from "@gambit/sdk";
 import {
   BRAND,
@@ -34,6 +36,8 @@ export function RoomView({ roomId, code }: { roomId: string; code: string }) {
   const [snapshot, setSnapshot] = useState<(ClientSnapshot & { me: { playerId: string; name: string } }) | null>(
     null
   );
+  // The game's own code arrives in its own chunk, alongside the snapshot.
+  const [def, setDef] = useState<AnyGameDefinition | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
@@ -42,14 +46,26 @@ export function RoomView({ roomId, code }: { roomId: string; code: string }) {
       setError("That table is gone.");
       return;
     }
-    setSnapshot((await res.json()) as never);
+    const body = (await res.json()) as ClientSnapshot & { me: { playerId: string; name: string } };
+    setSnapshot(body);
+    setDef(await loadGame(body.gameId));
   }, [roomId]);
 
   useEffect(() => {
-    void load();
+    // Time to seated is the metric the ten-second promise lives or dies by, so
+    // it is measured from the moment the page starts, not from the first render.
+    const startedAt = performance.now();
+    void load().then(() => {
+      track({
+        name: "time_to_seated",
+        ms: Math.round(performance.now() + (performance.timing ? 0 : 0) - startedAt),
+        players: 1,
+        mode: "online"
+      });
+    });
   }, [load]);
 
-  if (!snapshot) {
+  if (!snapshot || !def) {
     return (
       <main style={{ display: "grid", placeItems: "center", minHeight: "100dvh" }}>
         <div className="gambit-breathe" style={{ color: "var(--mut)", letterSpacing: 3 }}>
@@ -60,20 +76,21 @@ export function RoomView({ roomId, code }: { roomId: string; code: string }) {
     );
   }
 
-  return <Table key={snapshot.room.status} snapshot={snapshot} code={code} onReload={load} />;
+  return <Table key={snapshot.room.status} def={def} snapshot={snapshot} code={code} onReload={load} />;
 }
 
 function Table({
+  def,
   snapshot,
   code,
   onReload
 }: {
+  def: AnyGameDefinition;
   snapshot: ClientSnapshot & { me: { playerId: string; name: string } };
   code: string;
   onReload(): void;
 }) {
   const router = useRouter();
-  const def = CATALOG[snapshot.gameId]!;
   const { theme } = useTheme();
   const { sfx } = useAudio();
   const reducedMotion = useReducedMotion();
@@ -81,8 +98,9 @@ function Table({
   const [invite, setInvite] = useState<"here" | "online" | null>(null);
   const [intro, setIntro] = useState(snapshot.room.status === "playing");
   const [error, setError] = useState<string | null>(null);
+  const [draft, setDraft] = useState("");
 
-  const { state, play } = useTable({
+  const { state, play, chat: chatFn } = useTable({
     def,
     roomId: snapshot.room.id,
     playerId: snapshot.me.playerId,
@@ -113,6 +131,12 @@ function Table({
     if (state.rejection) setError(state.rejection);
   }, [state.rejection]);
 
+  // The move-latency budget: p95 input-to-acknowledgement under 150ms in-region.
+  useEffect(() => {
+    if (state.pingMs === null) return;
+    track({ name: "move_latency", gameId: snapshot.gameId, ms: state.pingMs });
+  }, [state.pingMs, snapshot.gameId]);
+
   const seats: Seat[] = useMemo(
     () =>
       room.players
@@ -131,6 +155,11 @@ function Table({
   const isHost = room.hostId === snapshot.me.playerId;
   const myTurn = state.seat !== null && state.current.includes(state.seat);
   const url = typeof location !== "undefined" ? `${location.origin}/r/${code}` : `/r/${code}`;
+
+  // Chat arrives on the room channel — which never carries game state — and is
+  // echoed back to the sender too, so there is nothing to keep locally.
+  const chat = state.chat;
+  const chatTo = (text: string) => chatFn(text);
 
   async function act(body: Record<string, unknown>) {
     const res = await fetch(`/api/rooms/${room.id}/action`, {
@@ -349,6 +378,70 @@ function Table({
             waiting on {seats.filter((s) => state.current.includes(s.id)).map((s) => s.name).join(", ") || "the table"}
           </div>
         )}
+
+        {state.seat === null && (
+          <div style={{ textAlign: "center", color: "var(--mut)", fontSize: 13 }}>
+            you're watching this table — hands and secrets stay hidden
+          </div>
+        )}
+
+        {state.terminal && (
+          <div style={{ textAlign: "center" }}>
+            <Button variant="ghost" onClick={() => router.push(`/replay/${code}`)}>
+              Watch the replay
+            </Button>
+          </div>
+        )}
+
+        <Panel style={{ padding: 12, display: "grid", gap: 8 }}>
+          <SmallCaps>table talk</SmallCaps>
+          <div style={{ maxHeight: 120, overflowY: "auto", display: "grid", gap: 4, fontSize: 13 }}>
+            {chat.slice(-30).map((line, i) => (
+              <div key={i}>
+                <span style={{ color: "var(--accent)" }}>{line.name}</span>{" "}
+                <span>{line.emote ?? line.text}</span>
+              </div>
+            ))}
+            {chat.length === 0 && <span style={{ color: "var(--mut)" }}>nobody's said anything yet</span>}
+          </div>
+          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+            {["Nice one", "Ouch", "Your turn", "Good game", "😀", "🔥"].map((phrase) => (
+              <button
+                key={phrase}
+                className="gambit-mini"
+                onClick={() => {
+                  chatTo(phrase);
+                }}
+              >
+                {phrase}
+              </button>
+            ))}
+          </div>
+          <div style={{ display: "flex", gap: 6 }}>
+            <input
+              value={draft}
+              onChange={(e) => setDraft(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key !== "Enter" || !draft.trim()) return;
+                chatTo(draft.trim());
+                setDraft("");
+              }}
+              placeholder="say something"
+              aria-label="Chat message"
+              maxLength={280}
+              style={{
+                flex: 1,
+                background: "var(--panel2)",
+                border: "1px solid var(--line)",
+                color: "var(--ink)",
+                borderRadius: 8,
+                padding: "8px 10px",
+                fontFamily: "inherit",
+                fontSize: 14
+              }}
+            />
+          </div>
+        </Panel>
       </div>
 
       <Toast message={error} onDone={() => setError(null)} />

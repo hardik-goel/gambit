@@ -53,7 +53,9 @@ export function Shelf({
   onSelect,
   onPlayHere,
   onPlayOnline,
-  onTutorial
+  onTutorial,
+  onQuickMatch,
+  waiting = {}
 }: {
   games: ShelfGame[];
   selectedId: string;
@@ -61,6 +63,9 @@ export function Shelf({
   onPlayHere(id: string): void;
   onPlayOnline(id: string): void;
   onTutorial(id: string): void;
+  onQuickMatch?(id: string): void;
+  /** How many people are waiting for each game right now. */
+  waiting?: Record<string, number>;
 }) {
   const [filter, setFilter] = useState("all");
   const sfx = useSfx();
@@ -158,6 +163,8 @@ export function Shelf({
             onPlayHere={() => onPlayHere(selected.id)}
             onPlayOnline={() => onPlayOnline(selected.id)}
             onTutorial={() => onTutorial(selected.id)}
+            onQuickMatch={onQuickMatch ? () => onQuickMatch(selected.id) : undefined}
+            waiting={waiting[selected.id] ?? 0}
           />
         )}
       </AnimatePresence>
@@ -275,12 +282,16 @@ function GameCard({
   game,
   onPlayHere,
   onPlayOnline,
-  onTutorial
+  onTutorial,
+  onQuickMatch,
+  waiting
 }: {
   game: ShelfGame;
   onPlayHere(): void;
   onPlayOnline(): void;
   onTutorial(): void;
+  onQuickMatch?(): void;
+  waiting: number;
 }) {
   return (
     <motion.div
@@ -351,6 +362,14 @@ function GameCard({
             <Button variant="ghost" cue="open" onClick={onPlayOnline}>
               Play online · invite friends
             </Button>
+            {onQuickMatch && (
+              <Button variant="ghost" cue="open" onClick={onQuickMatch}>
+                Quick match
+                {waiting > 0 && (
+                  <span style={{ color: "var(--accent)" }}> · {waiting} waiting</span>
+                )}
+              </Button>
+            )}
             <Button variant="quiet" onClick={onTutorial}>
               2-min tutorial
             </Button>
