@@ -21,7 +21,8 @@
     "sim:all": "tsx scripts/sim-all.ts",
     "db:check": "tsx scripts/db-check.ts",
     "e2e:social": "tsx scripts/social-e2e.ts",
-    "db:migrate": "tsx scripts/db-migrate.ts"
+    "db:migrate": "tsx scripts/db-migrate.ts",
+    "go-live": "tsx scripts/go-live.ts"
   },
   "devDependencies": {
     "@types/node": "^22.10.5",

@@ -20,6 +20,19 @@ uses memory and SSE. Nothing above those two ports changes.
 
 ## Vercel + Supabase
 
+### The short version
+
+```bash
+# 1. make a Supabase project at supabase.com/dashboard (free tier is fine)
+# 2. put four values in .env.local (see below)
+pnpm go-live
+```
+
+`pnpm go-live` applies the schema, proves the production store works against
+your project, links Vercel, pushes the environment, deploys, and prints the URL.
+It stops at the first thing that fails rather than half-deploying. The long
+version below is the same steps, by hand.
+
 ### 1. Make a Supabase project
 
 <https://supabase.com/dashboard> → **New project**. The free tier is enough to
