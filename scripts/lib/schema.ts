@@ -30,6 +30,11 @@ export function renderForSchema(sql: string, schema: string): string {
     .replace(/set\s+search_path\s*=\s*public\b/g, `set search_path = ${schema}`);
 }
 
-/** The schema the app and the migrations should agree on. */
-export const configuredSchema = (): string =>
-  safeSchema(process.env.GAMBIT_DB_SCHEMA?.trim() || "public");
+/**
+ * The schema the app and the migrations should agree on.
+ *
+ * Takes an explicit value where the caller has already loaded `.env.local`;
+ * falls back to the process environment, which is what a deploy sees.
+ */
+export const configuredSchema = (value?: string): string =>
+  safeSchema((value ?? process.env.GAMBIT_DB_SCHEMA)?.trim() || "public");

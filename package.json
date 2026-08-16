@@ -22,7 +22,8 @@
     "db:check": "tsx scripts/db-check.ts",
     "e2e:social": "tsx scripts/social-e2e.ts",
     "db:migrate": "tsx scripts/db-migrate.ts",
-    "go-live": "tsx scripts/go-live.ts"
+    "go-live": "tsx scripts/go-live.ts",
+    "preflight": "tsx scripts/preflight.ts"
   },
   "devDependencies": {
     "@types/node": "^22.10.5",
