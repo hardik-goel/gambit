@@ -142,7 +142,11 @@ export function Board({ view, legal, seat, play, sfx }: BoardProps<FacetView, Fa
   const gemsWith = (gem: Gem) => take3.filter((m) => m.gems.includes(gem));
 
   return (
-    <div style={{ display: "grid", gap: 14, width: "min(96vw, 760px)" }}>
+    // `min(96vw, …)` measures the window, not the column this sits in, so on a
+    // phone the board was wider than its own frame and took the page sideways
+    // with it. Every row that can outgrow the width scrolls inside itself
+    // instead.
+    <div style={{ display: "grid", gap: 14, width: "min(96vw, 760px)", maxWidth: "100%" }}>
       {view.pending && (
         <div
           style={{
@@ -174,7 +178,16 @@ export function Board({ view, legal, seat, play, sfx }: BoardProps<FacetView, Fa
       )}
 
       {/* patrons */}
-      <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "center" }}>
+      <div
+        style={{
+          display: "flex",
+          gap: 8,
+          flexWrap: "wrap",
+          justifyContent: "center",
+          maxWidth: "100%",
+          overflowX: "auto"
+        }}
+      >
         {view.nobles.map((n) => (
           <div
             key={n.id}
@@ -259,7 +272,16 @@ export function Board({ view, legal, seat, play, sfx }: BoardProps<FacetView, Fa
       ))}
 
       {/* the bank */}
-      <div style={{ display: "flex", gap: 8, justifyContent: "center", flexWrap: "wrap" }}>
+      <div
+        style={{
+          display: "flex",
+          gap: 8,
+          justifyContent: "center",
+          flexWrap: "wrap",
+          maxWidth: "100%",
+          overflowX: "auto"
+        }}
+      >
         {view.bank.map((count, gem) => {
           const two = take2.find((m) => m.gem === gem);
           const threes = gem < 5 ? gemsWith(gem as Gem) : [];

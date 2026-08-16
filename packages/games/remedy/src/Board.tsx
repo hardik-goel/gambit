@@ -33,7 +33,7 @@ export function Board({ view, legal, seat, play, sfx, reducedMotion }: BoardProp
   const endTurn = legal.find((m) => m.kind === "end-turn");
 
   return (
-    <div style={{ display: "grid", gap: 12, width: "min(97vw, 900px)" }}>
+    <div style={{ display: "grid", gap: 12, width: "min(97vw, 900px)", maxWidth: "100%" }}>
       <div style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap", fontSize: 13 }}>
         <span style={{ color: "var(--accent)" }}>{view.actionsLeft} actions left</span>
         <span>outbreaks {view.outbreaks}/{view.outbreakLimit}</span>

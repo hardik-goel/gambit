@@ -51,7 +51,7 @@ export function Board({ view, legal, seat, play, sfx, reducedMotion }: BoardProp
   const height = (bounds.maxY - bounds.minY + 1) * CELL;
 
   return (
-    <div style={{ display: "grid", gap: 12, width: "min(96vw, 760px)" }}>
+    <div style={{ display: "grid", gap: 12, width: "min(96vw, 760px)", maxWidth: "100%" }}>
       <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
         {view.drawn && (
           <>

@@ -68,7 +68,7 @@ export function Board({ view, legal, seat, play, sfx, reducedMotion }: BoardProp
   }
 
   return (
-    <div style={{ display: "grid", gap: 16, width: "min(96vw, 720px)" }}>
+    <div style={{ display: "grid", gap: 16, width: "min(96vw, 720px)", maxWidth: "100%" }}>
       {/* factories + centre */}
       <div style={{ display: "flex", gap: 10, flexWrap: "wrap", justifyContent: "center" }}>
         {view.factories.map((factory, i) => (

@@ -48,7 +48,7 @@ export function Board({ view, legal, seat, play, sfx, reducedMotion }: BoardProp
   const offers = legal.filter((m): m is Extract<LandfallMove, { kind: "offer" }> => m.kind === "offer");
 
   return (
-    <div style={{ display: "grid", gap: 12, width: "min(96vw, 720px)" }}>
+    <div style={{ display: "grid", gap: 12, width: "min(96vw, 720px)", maxWidth: "100%" }}>
       <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap", fontSize: 13 }}>
         <span style={{ color: "var(--accent)" }}>{view.phase}</span>
         {view.lastRoll && (

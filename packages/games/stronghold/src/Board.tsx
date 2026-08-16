@@ -85,7 +85,7 @@ export function Board({ view, legal, seat, play, sfx, reducedMotion }: BoardProp
   }
 
   return (
-    <div style={{ display: "grid", gap: 12, width: "min(97vw, 940px)" }}>
+    <div style={{ display: "grid", gap: 12, width: "min(97vw, 940px)", maxWidth: "100%" }}>
       <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap", fontSize: 13 }}>
         <span style={{ color: "var(--accent)" }}>{view.phase}</span>
         {(view.toPlace[mySeat] ?? 0) > 0 && <span>{view.toPlace[mySeat]} armies to place</span>}
@@ -193,7 +193,13 @@ export function Board({ view, legal, seat, play, sfx, reducedMotion }: BoardProp
                 fill={colourOf(territory.key)}
                 stroke={selected ? "var(--ink)" : lit ? "var(--accent)" : "rgba(0,0,0,.4)"}
                 strokeWidth={selected || lit ? 3 : 1}
-                animate={reducedMotion ? {} : { r: lit ? 19 : 16 }}
+                // The radius is always animated to a real value. Handing
+                // Framer an empty target for an SVG attribute it manages makes
+                // it write `undefined`, which the browser rejects — 42 console
+                // errors a render, one per territory, for anybody who has
+                // reduced motion turned on.
+                animate={{ r: lit ? 19 : 16 }}
+                transition={{ duration: reducedMotion ? 0 : 0.18 }}
               />
               <text
                 x={territory.x}

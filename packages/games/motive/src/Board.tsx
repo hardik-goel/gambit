@@ -75,7 +75,7 @@ export function Board({ view, legal, seat, play, sfx }: BoardProps<MotiveView, M
   const roomTarget = (room: number) => moves.find((m) => m.to.kind === "room" && m.to.room === room);
 
   return (
-    <div style={{ display: "grid", gap: 14, width: "min(96vw, 760px)" }}>
+    <div style={{ display: "grid", gap: 14, width: "min(96vw, 760px)", maxWidth: "100%" }}>
       <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap", fontSize: 13 }}>
         <span style={{ color: "var(--accent)" }}>
           round {view.round}/{view.maxRounds}

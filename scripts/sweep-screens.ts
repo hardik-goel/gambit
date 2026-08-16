@@ -190,14 +190,35 @@ async function main(): Promise<void> {
         await visit(browser, `learn-${game}`, `/learn/${game}`, viewport);
       }
 
-      // A table of one's own: start a solo game against bots for each shelf item
-      // and photograph the felt.
+      // A table of one's own. Pressing "play here" only opens the invite card,
+      // so the felt — the thing the whole product is for — was never once
+      // photographed until this walked the rest of the way: into the lobby,
+      // fill the empty seats with bots, and deal.
       for (const game of GAMES) {
         await visit(browser, `table-${game}`, `/?game=${game}`, viewport, async (page) => {
-          const play = page.getByRole("button", { name: /play here|play now|start/i }).first();
-          if (await play.count()) {
-            await play.click({ timeout: 10_000 }).catch(() => undefined);
-            await page.waitForTimeout(2500);
+          const play = page.getByRole("button", { name: /play here/i }).first();
+          if (!(await play.count())) return;
+          await play.click({ timeout: 10_000 }).catch(() => undefined);
+
+          const open = page.getByRole("button", { name: /open the lobby/i }).first();
+          await open.click({ timeout: 10_000 }).catch(() => undefined);
+          await page.waitForURL(/\/r\//, { timeout: 15_000 }).catch(() => undefined);
+          await page.waitForTimeout(1500);
+
+          // Seat bots until the table is full enough to deal.
+          for (let i = 0; i < 5; i++) {
+            const start = page.getByRole("button", { name: /start the game/i }).first();
+            if ((await start.count()) && (await start.isEnabled().catch(() => false))) break;
+            const bot = page.getByRole("button", { name: /add a bot/i }).first();
+            if (!(await bot.count())) break;
+            await bot.click({ timeout: 5_000 }).catch(() => undefined);
+            await page.waitForTimeout(700);
+          }
+
+          const start = page.getByRole("button", { name: /start the game/i }).first();
+          if (await start.count()) {
+            await start.click({ timeout: 8_000 }).catch(() => undefined);
+            await page.waitForTimeout(3500);
           }
         });
       }

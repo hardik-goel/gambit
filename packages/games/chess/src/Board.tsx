@@ -74,7 +74,7 @@ export function Board({ view, legal, seat, play, sfx, reducedMotion, pending }: 
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(8, 1fr)",
-          width: "min(92vw, 560px)",
+          width: "min(92vw, 560px)", maxWidth: "100%",
           aspectRatio: "1",
           borderRadius: 10,
           overflow: "hidden",
@@ -125,7 +125,7 @@ export function Board({ view, legal, seat, play, sfx, reducedMotion, pending }: 
               )}
               {isCheckedKing && (
                 <motion.span
-                  animate={reducedMotion ? {} : { opacity: [0.25, 0.55, 0.25] }}
+                  animate={{ opacity: reducedMotion ? 0.4 : [0.25, 0.55, 0.25] }}
                   transition={{ repeat: Infinity, duration: 1.1 }}
                   style={{
                     position: "absolute",
@@ -220,7 +220,7 @@ function Clocks({ view, myColor }: { view: ChessView; myColor: Color | null }) {
 
   const order: Color[] = myColor === "b" ? ["w", "b"] : ["b", "w"];
   return (
-    <div style={{ display: "flex", gap: 12, width: "min(92vw, 560px)", justifyContent: "space-between" }}>
+    <div style={{ display: "flex", gap: 12, width: "min(92vw, 560px)", maxWidth: "100%", justifyContent: "space-between" }}>
       {order.map((c) => (
         <div
           key={c}
