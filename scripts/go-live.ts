@@ -26,6 +26,9 @@ const REQUIRED = [
   "DATABASE_URL"
 ] as const;
 
+/** Pushed to Vercel if set, but not required — `public` is the default. */
+const OPTIONAL = ["GAMBIT_DB_SCHEMA"] as const;
+
 /** Values that must never leave the server. */
 const SERVER_ONLY = ["SUPABASE_SERVICE_ROLE_KEY", "CRON_SECRET"];
 
@@ -76,14 +79,23 @@ function main(): void {
   const cronSecret =
     env.CRON_SECRET ?? Array.from({ length: 4 }, () => Math.random().toString(36).slice(2)).join("");
 
-  step(1, "applying the schema");
-  run("pnpm", ["exec", "tsx", "scripts/db-migrate.ts"], ROOT, { ...process.env, DATABASE_URL: env.DATABASE_URL });
+  const schema = env.GAMBIT_DB_SCHEMA?.trim() || "public";
+
+  step(1, `applying the schema${schema === "public" ? "" : ` into "${schema}"`}`);
+  run("pnpm", ["exec", "tsx", "scripts/db-migrate.ts"], ROOT, {
+    ...process.env,
+    DATABASE_URL: env.DATABASE_URL,
+    GAMBIT_DB_SCHEMA: schema
+  });
 
   step(2, "checking the production store against your project");
+  // This is also the step that catches an unexposed schema: PostgREST answers
+  // "The schema must be one of the following" long before a player would.
   run("pnpm", ["exec", "vitest", "run", "apps/web/lib/server/supabase.test.ts"], ROOT, {
     ...process.env,
     NEXT_PUBLIC_SUPABASE_URL: env.NEXT_PUBLIC_SUPABASE_URL,
-    SUPABASE_SERVICE_ROLE_KEY: env.SUPABASE_SERVICE_ROLE_KEY
+    SUPABASE_SERVICE_ROLE_KEY: env.SUPABASE_SERVICE_ROLE_KEY,
+    GAMBIT_DB_SCHEMA: schema
   });
 
   step(3, "building");
@@ -100,7 +112,12 @@ function main(): void {
   }
 
   step(5, "pushing the environment");
-  for (const key of [...REQUIRED.filter((k) => k !== "DATABASE_URL"), "CRON_SECRET"]) {
+  const push = [
+    ...REQUIRED.filter((k) => k !== "DATABASE_URL"),
+    "CRON_SECRET",
+    ...OPTIONAL.filter((k) => env[k])
+  ];
+  for (const key of push) {
     const value = key === "CRON_SECRET" ? cronSecret : env[key]!;
     for (const target of ["production", "preview"]) {
       try {

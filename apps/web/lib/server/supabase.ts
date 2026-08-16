@@ -37,11 +37,37 @@ import type { SeatId } from "@gambit/sdk";
 export const hasSupabase = (): boolean =>
   Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY);
 
-export function serviceClient(): SupabaseClient {
+/**
+ * Which schema Gambit's tables live in.
+ *
+ * `public` when the project is Gambit's own. When the project is shared with
+ * another product, `GAMBIT_DB_SCHEMA=gambit` keeps the two sets of tables from
+ * ever meeting — see `scripts/db-migrate.ts`. The value must match what the
+ * migration was applied with, and the schema must be listed under Settings →
+ * API → Exposed schemas.
+ */
+export const dbSchema = (): string => process.env.GAMBIT_DB_SCHEMA?.trim() || "public";
+
+/**
+ * A client whose schema is decided at runtime.
+ *
+ * `SupabaseClient` defaults its schema parameter to the literal `"public"`,
+ * which is exactly the assumption we are removing, so the schema is widened to
+ * `string` here and nowhere else.
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- the generated
+// Database type does not exist here; rows are typed at each call site instead.
+type GambitClient = SupabaseClient<any, string, string>;
+
+export function serviceClient(): GambitClient {
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { persistSession: false }, realtime: { params: { eventsPerSecond: 20 } } }
+    {
+      auth: { persistSession: false },
+      db: { schema: dbSchema() },
+      realtime: { params: { eventsPerSecond: 20 } }
+    }
   );
 }
 
@@ -103,7 +129,7 @@ const toRoom = (row: RoomRow, players: PlayerRow[]): Room => ({
 });
 
 export class SupabaseRoomStore implements RoomStore {
-  constructor(private readonly db: SupabaseClient = serviceClient()) {}
+  constructor(private readonly db: GambitClient = serviceClient()) {}
 
   private async load(where: "id" | "code", value: string): Promise<Room | null> {
     const { data: room } = await this.db
@@ -330,7 +356,7 @@ export class SupabaseRoomStore implements RoomStore {
  * contains the room and the seat, and the API hands a client its seat only
  * after checking who they are.
  */
-export function supabaseBroadcaster(db: SupabaseClient = serviceClient()): Broadcaster {
+export function supabaseBroadcaster(db: GambitClient = serviceClient()): Broadcaster {
   const send = async (channelName: string, msg: ServerMessage) => {
     const channel = db.channel(channelName, { config: { broadcast: { self: true } } });
     await channel.send({ type: "broadcast", event: "gambit", payload: msg });

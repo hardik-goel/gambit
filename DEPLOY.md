@@ -56,9 +56,37 @@ DATABASE_URL="postgres://…" pnpm db:migrate
 ```
 
 The connection string is under Project Settings → Database → Connection string →
-URI. The runner records each file in `public.schema_migrations`, so running it
-again applies only what is new. The same SQL is exercised against a throwaway
-Postgres by `pnpm db:check`.
+URI. The runner records each file in `schema_migrations`, so running it again
+applies only what is new. The same SQL is exercised against a throwaway Postgres
+by `pnpm db:check`.
+
+#### Sharing a project with another product
+
+The free tier allows two projects, so Gambit may have to live in one that is
+already somebody else's. It has no business creating a `profiles` table in a
+schema another product is using, so point it at a schema of its own:
+
+```bash
+GAMBIT_DB_SCHEMA=gambit DATABASE_URL="postgres://…" pnpm db:migrate
+```
+
+Every table, index, policy and function goes into `gambit` instead of `public`.
+Nothing in `public` is read, written, or looked at, and `drop schema gambit
+cascade` removes Gambit whole, leaving the other product untouched.
+
+Two settings then have to agree with that choice:
+
+| Where | What |
+|---|---|
+| Supabase → Settings → API → **Exposed schemas** | add `gambit` |
+| the app's environment | `GAMBIT_DB_SCHEMA=gambit` |
+
+Miss the first and the API refuses the schema; miss the second and the app looks
+in `public` and finds nothing. `pnpm go-live` pushes the variable for you and
+step 2 fails loudly if the schema is not exposed.
+
+`pnpm db:check` runs its whole battery twice — once in `public`, once in a
+schema of its own — so this is verified rather than assumed.
 
 ### 3. Check the store against the real project
 
