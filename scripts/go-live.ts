@@ -17,7 +17,11 @@ import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
 const ROOT = new URL("..", import.meta.url).pathname;
-const WEB = join(ROOT, "apps/web");
+// The deploy is the whole workspace, not the app directory: apps/web depends on
+// six local packages, and a deploy rooted there installs none of them. Vercel
+// builds from the root and takes its Next output from apps/web/.next — see
+// vercel.json.
+const DEPLOY_FROM = ROOT;
 
 const REQUIRED = [
   "NEXT_PUBLIC_SUPABASE_URL",
@@ -103,7 +107,7 @@ function main(): void {
 
   step(4, "linking the Vercel project");
   try {
-    run("vercel", ["link", "--yes"], WEB);
+    run("vercel", ["link", "--yes"], DEPLOY_FROM);
   } catch {
     console.error(
       "\nCouldn't link non-interactively. Run `cd apps/web && vercel link` once, then re-run this."
@@ -121,18 +125,18 @@ function main(): void {
     const value = key === "CRON_SECRET" ? cronSecret : env[key]!;
     for (const target of ["production", "preview"]) {
       try {
-        execSync(`vercel env rm ${key} ${target} --yes`, { cwd: WEB, stdio: "ignore" });
+        execSync(`vercel env rm ${key} ${target} --yes`, { cwd: DEPLOY_FROM, stdio: "ignore" });
       } catch {
         // Nothing to remove the first time round.
       }
       const sensitive = SERVER_ONLY.includes(key) ? ["--sensitive"] : [];
-      run("vercel", ["env", "add", key, target, "--value", value, "--yes", ...sensitive], WEB);
+      run("vercel", ["env", "add", key, target, "--value", value, "--yes", ...sensitive], DEPLOY_FROM);
     }
     console.log(`      ${key} set${SERVER_ONLY.includes(key) ? " (server-only)" : ""}`);
   }
 
   step(6, "deploying");
-  const output = execFileSync("vercel", ["--prod", "--yes"], { cwd: WEB, encoding: "utf8" });
+  const output = execFileSync("vercel", ["--prod", "--yes"], { cwd: DEPLOY_FROM, encoding: "utf8" });
   const url = output.trim().split("\n").filter(Boolean).at(-1);
 
   console.log(`\n─────────────────────────────────────────────`);
