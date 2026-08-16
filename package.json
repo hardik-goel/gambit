@@ -2,7 +2,7 @@
   "name": "gambit",
   "private": true,
   "version": "0.1.0",
-  "description": "Gambit \u2014 the one-stop multiplayer board-gaming platform.",
+  "description": "Gambit — the one-stop multiplayer board-gaming platform.",
   "packageManager": "pnpm@9.15.4",
   "engines": {
     "node": ">=20.11"
@@ -29,6 +29,7 @@
     "@types/node": "^22.10.5",
     "@types/pg": "^8.21.0",
     "pg": "^8.23.0",
+    "playwright": "^1.62.1",
     "tsx": "^4.19.2",
     "typescript": "^5.7.3",
     "vitest": "^2.1.8"

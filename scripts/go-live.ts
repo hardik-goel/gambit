@@ -17,10 +17,10 @@ import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
 const ROOT = new URL("..", import.meta.url).pathname;
-// The deploy is the whole workspace, not the app directory: apps/web depends on
-// six local packages, and a deploy rooted there installs none of them. Vercel
-// builds from the root and takes its Next output from apps/web/.next — see
-// vercel.json.
+// The deploy is uploaded from the repository root, because apps/web depends on
+// six local packages and a deploy rooted at the app installs none of them. The
+// Vercel project's Root Directory is apps/web, which is what makes it install
+// the workspace and then build only the app — see scripts/dev/set-root-directory.ts.
 const DEPLOY_FROM = ROOT;
 
 const REQUIRED = [
