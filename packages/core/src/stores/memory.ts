@@ -144,6 +144,10 @@ export class MemoryRoomStore implements RoomStore {
       .filter((r) => r.status === "lobby" && (!gameId || r.gameId === gameId));
   }
 
+  async listPlayingRooms(): Promise<Room[]> {
+    return [...this.rooms.values()].map((e) => e.room).filter((r) => r.status === "playing");
+  }
+
   async recordResult(roomId: string, result: unknown): Promise<void> {
     this.must(roomId).result = result;
   }

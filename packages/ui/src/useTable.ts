@@ -3,7 +3,7 @@
 import { TableClient, type TableState } from "@gambit/core";
 import type { AnyGameDefinition, SeatId } from "@gambit/sdk";
 import { useEffect, useMemo, useRef, useSyncExternalStore } from "react";
-import { HttpTransport } from "./transports/http";
+import { chooseTransport } from "./transports/index";
 
 export interface UseTableOptions {
   def: AnyGameDefinition;
@@ -21,7 +21,8 @@ export interface UseTableResult {
 }
 
 export function useTable(opts: UseTableOptions): UseTableResult {
-  const transport = useMemo(() => new HttpTransport(), []);
+  // SSE where a process stays alive, Supabase Realtime where it doesn't.
+  const transport = useMemo(() => chooseTransport(), []);
   const clientRef = useRef<TableClient | null>(null);
   if (!clientRef.current) {
     clientRef.current = new TableClient({

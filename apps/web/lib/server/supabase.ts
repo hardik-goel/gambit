@@ -306,6 +306,12 @@ export class SupabaseRoomStore implements RoomStore {
     return rooms.filter((r): r is Room => r !== null);
   }
 
+  async listPlayingRooms(): Promise<Room[]> {
+    const { data } = await this.db.from("rooms").select("id").eq("status", "playing").limit(200);
+    const rooms = await Promise.all((data ?? []).map((row) => this.getRoom(row.id as string)));
+    return rooms.filter((r): r is Room => r !== null);
+  }
+
   async recordResult(roomId: string, result: unknown): Promise<void> {
     const payload = result as { gameId: string; seed: string; scores: unknown; seats: unknown };
     await this.db.from("game_results").insert({

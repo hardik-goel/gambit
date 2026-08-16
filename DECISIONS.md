@@ -333,3 +333,29 @@ The cookie still carries a name so a first-time visitor has one before they have
 a profile, but every room-facing route reads `displayName()`, which prefers the
 profile. Renaming yourself in the people panel renames you at every table at
 once, rather than leaving two names to drift apart.
+
+### D42 · The client picks its transport too, and pays for only one
+
+With Supabase configured the server broadcasts over Realtime — but the browser
+was still listening on the in-process SSE route, which would have delivered the
+opening snapshot and then silence. `SupabaseTransport` closes that gap: Realtime
+down, HTTP up, because a client may never write a move.
+
+The Realtime client is a quarter of a megabyte and the shelf has no use for it,
+so the choice is made behind a dynamic import. `pnpm perf` caught the first
+version of this putting `@supabase/supabase-js` into the front door's bundle.
+
+### D43 · Serverless has no timer, so the clock is a cron
+
+`lib/server/timeouts.ts` sweeps live tables from a `setInterval`, which does not
+exist on a serverless platform. `/api/cron/sweep` does the same job once a
+minute, guarded by `CRON_SECRET`, and reads idleness from the snapshot's own
+`updatedAt` — the one timestamp that is written on every move regardless of
+which store is underneath.
+
+### D44 · Migrations are recorded, and a changed one is an error
+
+`pnpm db:migrate` writes each file's name and checksum to
+`public.schema_migrations`. Running it again applies only what is new. Editing a
+migration that has already run stops the runner rather than silently letting two
+environments drift apart — write a new file instead.

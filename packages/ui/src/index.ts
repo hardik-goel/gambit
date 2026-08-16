@@ -4,7 +4,7 @@ export * from "./audio";
 export * from "./providers";
 export * from "./useTable";
 export * from "./shareCard";
-export * from "./transports/http";
+export * from "./transports/index";
 export * from "./components/primitives";
 export * from "./components/Shelf";
 export * from "./components/TableIntro";

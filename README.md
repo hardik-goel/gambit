@@ -70,8 +70,14 @@ rows, the idempotency key — with no Supabase project needed. Point
 Supabase half of the contract runs too; without them it is skipped loudly rather
 than passing quietly.
 
-Phase 2 adds `NearbyTransport` for genuinely offline same-room play — see
-[ROADMAP.md](ROADMAP.md).
+The browser picks its transport the same way: Supabase Realtime where it is
+configured, SSE where a process stays alive to hold one open. The Realtime
+client is behind a dynamic import, so a deployment that does not use it never
+downloads it — `pnpm perf` fails the build if that regresses.
+
+See [DEPLOY.md](DEPLOY.md) for both shapes, and Phase 2 in
+[ROADMAP.md](ROADMAP.md) for `NearbyTransport`, which makes same-room play work
+with no internet at all.
 
 ## Documents
 
@@ -79,4 +85,5 @@ Phase 2 adds `NearbyTransport` for genuinely offline same-room play — see
 - [LEGAL.md](LEGAL.md) — the line between mechanics and expression, per game
 - [CREDITS.md](CREDITS.md) — where everything came from
 - [ADDING_A_GAME.md](ADDING_A_GAME.md) — the plugin path
+- [DEPLOY.md](DEPLOY.md) — the two ways to host it, and what each costs you
 - [ROADMAP.md](ROADMAP.md) — what's next

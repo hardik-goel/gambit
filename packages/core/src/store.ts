@@ -46,6 +46,11 @@ export interface RoomStore {
   findByIdempotencyKey(roomId: string, key: string): Promise<StoredMove | null>;
 
   listOpenRooms(gameId?: string): Promise<Room[]>;
+  /**
+   * Tables currently in play. Optional: only the turn-clock sweep needs it, and
+   * only on deployments with no long-lived process to hold a timer.
+   */
+  listPlayingRooms?(): Promise<Room[]>;
   recordResult(roomId: string, result: unknown): Promise<void>;
 }
 
