@@ -17,14 +17,20 @@
 - **Phase F** — quick match, Glicko-lite ratings and leaderboards, eleven
   tutorials that run the real game on the device, the replay theatre, table
   chat, analytics, and a CI performance budget with per-game code splitting.
+- **Social** — profiles (a name, an emoji, a six-character friend code), friend
+  requests, recent players, table invites, mute, report, and blocking that
+  reaches into the engine so two people who have blocked each other are never
+  seated together.
+- **Schema verification** — the production SQL is applied to a real Postgres in
+  CI, and both stores are held to one executable contract.
 
 ## Next
 
 - **Accounts** — Supabase Auth (email OTP, Google, Apple) replacing the cookie
   identity; the player id is the only thing that changes (DECISIONS D13).
 - **Seasons** — ratings reset on a cadence, with placements and a ladder page.
-- **Friends and profiles** — recent players, invites, mute, report and block.
 - **Spectator delay** — a 30-second delay on ranked tables.
+- **Moderation queue** — reports are filed and stored; nothing reads them yet.
 
 ## Phase 2 — same-room play with no internet at all
 

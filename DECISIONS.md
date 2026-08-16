@@ -282,3 +282,54 @@ never offered to strangers.
 `/learn/[gameId]` runs the actual `createState`, `legalMoves` and `Board`
 against the game's own bot, on the device. A scripted mock-up would drift out of
 step with the rules the first time a rule changed; this cannot.
+
+---
+
+## After Phase F — closing the two gaps that were left open
+
+### D37 · The production schema is executed, not trusted
+
+Everything else in the repository was verified by running it; the SQL was the
+one part taken on faith. `pnpm db:check` now applies `supabase/migrations` to a
+real Postgres — in a throwaway container locally, as a service in CI — and then
+exercises `append_game_events` directly: a first append lands at version 1, a
+stale version is refused and changes nothing, a private event keeps its seat
+list, and a repeated idempotency key writes one move rather than two.
+
+Supabase supplies `auth.users` and `auth.uid()`, which a bare Postgres does not,
+so the harness creates those shapes first. That is the only difference between
+the check and the real thing.
+
+### D38 · One contract, both stores
+
+`packages/core/src/testkit/storeContract.ts` is the `RoomStore` specification as
+eleven executable cases. The memory store runs them on every `pnpm test`; the
+Supabase store runs the same list when a project is configured, and **skips
+loudly** when one is not, because a green tick that means "we didn't look" is
+worse than a red one.
+
+### D39 · Blocking is a port, not a feature branch
+
+Friends, profiles, invites and reports are product concerns and live above the
+engine. Blocking is not: it changes who may join a room and who quick match will
+seat you with. So the engine takes a `SocialPort` with exactly one method —
+`blocked(a, b)` — and a deployment without a social layer passes `undefined` and
+behaves as before.
+
+The refusal is deliberately vague ("You can't join that table"), and never says
+a block exists or who set it. Telling somebody who blocked them is how a block
+becomes an argument.
+
+### D40 · A profile is a name, an emoji and a code
+
+No uploads, no photographs, no email — nothing that needs hosting, moderation or
+a deletion pipeline. The friend code uses the room-code alphabet, so it survives
+being read aloud across a table. The avatar accepts exactly one character, which
+is what stops the avatar slot becoming a second, unmoderated name field.
+
+### D41 · The profile is the only display name
+
+The cookie still carries a name so a first-time visitor has one before they have
+a profile, but every room-facing route reads `displayName()`, which prefers the
+profile. Renaming yourself in the people panel renames you at every table at
+once, rather than leaving two names to drift apart.

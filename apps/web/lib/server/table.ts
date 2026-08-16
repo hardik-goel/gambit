@@ -18,6 +18,7 @@ import { CATALOG } from "@gambit/games";
 import type { SeatId } from "@gambit/sdk";
 import { recordRatings } from "./ratings";
 import { SupabaseRoomStore, hasSupabase, supabaseBroadcaster } from "./supabase";
+import { rememberResult, socialPort } from "./social";
 
 // In development the sink is the log; in production it is one call to the
 // warehouse. Either way the game never waits on it.
@@ -95,10 +96,13 @@ export const deps: EngineDeps = {
   store: usingSupabase ? new SupabaseRoomStore() : store,
   catalog: CATALOG,
   broadcast: usingSupabase ? supabaseBroadcaster() : broadcast,
+  social: socialPort,
   onFinish({ room, gameId, seats, scores }) {
     // Ratings and analytics hang off the finish hook rather than sitting inside
     // the pipeline, so a game that ends is never held up by either.
     recordRatings(gameId, seats, scores);
+    // "Played with recently" is the list that makes adding a friend one tap.
+    rememberResult(gameId, seats.map((s) => ({ playerId: s.playerId, name: s.name })));
     track({
       name: "game_finished",
       gameId,

@@ -10,6 +10,7 @@
 import type { Result } from "@gambit/sdk";
 import { gameFor, type EngineDeps } from "./engine";
 import type { Room } from "./room";
+import { blockedAtTable } from "./social";
 import { createRoom, joinRoom } from "./rooms";
 
 export interface QuickMatchInput {
@@ -40,6 +41,8 @@ export async function quickMatch(
   const open = (await deps.store.listOpenRooms(input.gameId))
     .filter((room) => {
       if (room.passAndPlay) return false; // a same-room table isn't a public one
+      // Never seat somebody with a person either of them has blocked.
+      if (blockedAtTable(deps.social, input.player.playerId, room.players).length > 0) return false;
       const seated = room.players.filter((p) => p.seat !== null && !p.isBot).length;
       return seated > 0 && seated < def.meta.maxPlayers;
     })

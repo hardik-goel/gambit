@@ -10,4 +10,5 @@ export * from "./replay";
 export * from "./matchmaking";
 export * from "./ratings";
 export * from "./analytics";
+export * from "./social";
 export { MemoryRoomStore } from "./stores/memory";

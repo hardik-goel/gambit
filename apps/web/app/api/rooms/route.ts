@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createRoom } from "@gambit/core";
 import { CATALOG } from "@gambit/games";
 import { requireIdentity } from "@/lib/server/identity";
+import { displayName } from "@/lib/server/social";
 import { deps } from "@/lib/server/table";
 
 export const runtime = "nodejs";
@@ -32,7 +33,7 @@ export async function POST(req: Request) {
 
   const res = await createRoom(deps, {
     gameId: body.gameId,
-    host: { playerId: me.playerId, name: me.name },
+    host: { playerId: me.playerId, name: displayName(me.playerId, me.name) },
     config: body.config,
     passAndPlay: body.passAndPlay ?? false,
     turnTimeoutSec

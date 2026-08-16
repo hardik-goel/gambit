@@ -22,6 +22,7 @@ import { eventsFor, legalFor, viewFor } from "./redaction";
 import { seatOf, seatsFromRoom, type Room, type Snapshot } from "./room";
 import type { RoomStore } from "./store";
 import { VersionConflictError } from "./store";
+import type { SocialPort } from "./social";
 import type { Broadcaster } from "./transport";
 
 export interface EngineDeps {
@@ -35,6 +36,11 @@ export interface EngineDeps {
    * knowing that either of them exists.
    */
   onFinish?: (input: { room: Room; gameId: string; seats: Seat[]; scores: FinalScore[] }) => void;
+  /**
+   * Blocking, if the deployment has any. The engine asks it one question — may
+   * these two share a table — and nothing else.
+   */
+  social?: SocialPort;
 }
 
 const nowOf = (deps: EngineDeps) => deps.now?.() ?? Date.now();

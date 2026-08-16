@@ -34,10 +34,48 @@ jobs:
       - name: End-to-end table
         run: pnpm exec tsx scripts/e2e.ts
 
+      # Profiles, friend codes, invites, and blocking — which reaches into the
+      # engine and must keep two people off the same table.
+      - name: Social end-to-end
+        run: pnpm exec tsx scripts/social-e2e.ts
+
       # First-load JavaScript per route, and a check that the shelf never
       # carries a game's rules or map data.
       - name: Performance budget
         run: pnpm exec tsx scripts/perf-budget.ts
+
+  schema:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_PASSWORD: gambit
+          POSTGRES_DB: gambit
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+      # Applies supabase/migrations to a real Postgres and exercises the atomic
+      # append — the version check, the event rows and the idempotency key.
+      - name: Production schema
+        env:
+          DATABASE_URL: postgres://postgres:gambit@127.0.0.1:5432/gambit
+        run: pnpm exec tsx scripts/db-check.ts
 
   simulate:
     runs-on: ubuntu-latest

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { clientSnapshot, joinRoom } from "@gambit/core";
 import { requireIdentity } from "@/lib/server/identity";
+import { displayName } from "@/lib/server/social";
 import { deps, setSubscriberSeat } from "@/lib/server/table";
 
 export const runtime = "nodejs";
@@ -15,7 +16,10 @@ export async function GET(req: Request, ctx: { params: Promise<{ id: string }> }
   const me = await requireIdentity();
   const since = Number(new URL(req.url).searchParams.get("since") ?? 0);
 
-  const joined = await joinRoom(deps, id, { playerId: me.playerId, name: me.name });
+  const joined = await joinRoom(deps, id, {
+    playerId: me.playerId,
+    name: displayName(me.playerId, me.name)
+  });
   if (!joined.ok) return NextResponse.json({ error: joined.error }, { status: 404 });
 
   const snap = await clientSnapshot(deps, id, me.playerId, since);

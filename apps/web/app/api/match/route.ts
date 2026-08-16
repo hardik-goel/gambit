@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { lobbyCounts, quickMatch } from "@gambit/core";
 import { CATALOG } from "@gambit/games";
 import { requireIdentity } from "@/lib/server/identity";
+import { displayName } from "@/lib/server/social";
 import { deps } from "@/lib/server/table";
 
 export const runtime = "nodejs";
@@ -23,7 +24,7 @@ export async function POST(req: Request) {
   }
   const res = await quickMatch(deps, {
     gameId: body.gameId,
-    player: { playerId: me.playerId, name: me.name },
+    player: { playerId: me.playerId, name: displayName(me.playerId, me.name) },
     target: body.target
   });
   if (!res.ok) return NextResponse.json({ error: res.error }, { status: 400 });

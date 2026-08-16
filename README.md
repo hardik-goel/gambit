@@ -39,10 +39,12 @@ supabase/migrations      production schema, RLS on every table
 ## Test
 
 ```bash
-pnpm test                  # unit, property and integration tests (216 of them)
+pnpm test                  # unit, property and integration tests
 pnpm sim chess --games 500 # bot-versus-bot for one game, must finish clean
 pnpm sim:all               # every game, at both ends of its seat range
 pnpm e2e                   # two real clients against a real server
+pnpm e2e:social            # profiles, friends, invites and blocking
+pnpm db:check              # the production schema, on a real Postgres
 pnpm perf                  # first-load budget, and the shelf carries no game
 ```
 
@@ -56,9 +58,19 @@ a payload sent to anyone who should not have them.
 
 ## Production
 
-`RoomStore` and `GameTransport` are ports. Development uses memory + SSE;
-production uses Supabase (Postgres + Realtime), same interfaces. Phase 2 adds
-`NearbyTransport` for genuinely offline same-room play — see
+`RoomStore`, `GameTransport` and `SocialPort` are ports. Development uses
+memory + SSE; production uses Supabase (Postgres + Realtime), same interfaces.
+
+Both stores are held to the same executable contract
+(`packages/core/src/testkit/storeContract.ts`), so "the engine cannot tell them
+apart" is a test rather than a claim. `pnpm db:check` applies the migrations to
+a real Postgres and exercises the atomic append — the version check, the event
+rows, the idempotency key — with no Supabase project needed. Point
+`NEXT_PUBLIC_SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` at a project and the
+Supabase half of the contract runs too; without them it is skipped loudly rather
+than passing quietly.
+
+Phase 2 adds `NearbyTransport` for genuinely offline same-room play — see
 [ROADMAP.md](ROADMAP.md).
 
 ## Documents

@@ -31,6 +31,7 @@ import {
   useTheme
 } from "@gambit/ui";
 import { ConfigPanel } from "./ConfigPanel";
+import { usePeople } from "../../People";
 
 export function RoomView({ roomId, code }: { roomId: string; code: string }) {
   const [snapshot, setSnapshot] = useState<(ClientSnapshot & { me: { playerId: string; name: string } }) | null>(
@@ -101,6 +102,7 @@ function Table({
   const [draft, setDraft] = useState("");
   const [muted, setMuted] = useState<string[]>([]);
   const [menuFor, setMenuFor] = useState<string | null>(null);
+  const people = usePeople();
 
   useEffect(() => {
     try {
@@ -265,6 +267,35 @@ function Table({
             disabled={!isHost}
             onChange={(patch) => void act({ action: "config", config: patch })}
           />
+
+          {(people.data?.friends.length ?? 0) > 0 && (
+            <div style={{ display: "grid", gap: 8 }}>
+              <SmallCaps>ask a friend</SmallCaps>
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                {people.data!.friends.map((friend) => {
+                  const here = room.players.some((p) => p.playerId === friend.playerId);
+                  return (
+                    <button
+                      key={friend.playerId}
+                      className="gambit-mini"
+                      disabled={here}
+                      onClick={async () => {
+                        const error = await people.act({
+                          action: "invite",
+                          playerId: friend.playerId,
+                          roomId: room.id
+                        });
+                        setError(error ?? `Asked ${friend.name}.`);
+                      }}
+                    >
+                      {friend.avatar} {friend.name}
+                      {here ? " · here" : ""}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
             <Button

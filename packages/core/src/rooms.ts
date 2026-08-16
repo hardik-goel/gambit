@@ -1,6 +1,7 @@
 /** Lobby operations: create, join, seat, ready, bots, kick. Game-agnostic. */
 import { makeSeed, type BotLevel, type Result, type SeatId } from "@gambit/sdk";
 import { makeRoomCode } from "./codes";
+import { blockedAtTable } from "./social";
 import { gameFor, type EngineDeps } from "./engine";
 import type { Room, RoomPlayer } from "./room";
 
@@ -65,6 +66,12 @@ export async function joinRoom(
   if (!room) return fail("no-room", "That table no longer exists.");
   const def = gameFor(deps, room.gameId);
   const at = nowOf(deps);
+
+  // Blocking is quiet: the reason given is deliberately vague, because telling
+  // somebody who blocked them is how a block becomes an argument.
+  if (blockedAtTable(deps.social, player.playerId, room.players).length > 0) {
+    return fail("blocked", "You can't join that table.");
+  }
 
   const existing = room.players.find((p) => p.playerId === player.playerId);
   if (existing) {

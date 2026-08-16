@@ -18,10 +18,14 @@
     "perf": "tsx scripts/perf-budget.ts",
     "e2e": "tsx scripts/e2e.ts",
     "shelf-meta": "tsx scripts/gen-shelf-meta.ts",
-    "sim:all": "tsx scripts/sim-all.ts"
+    "sim:all": "tsx scripts/sim-all.ts",
+    "db:check": "tsx scripts/db-check.ts",
+    "e2e:social": "tsx scripts/social-e2e.ts"
   },
   "devDependencies": {
     "@types/node": "^22.10.5",
+    "@types/pg": "^8.21.0",
+    "pg": "^8.23.0",
     "tsx": "^4.19.2",
     "typescript": "^5.7.3",
     "vitest": "^2.1.8"

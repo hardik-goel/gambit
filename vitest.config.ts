@@ -8,6 +8,7 @@ export default defineConfig({
     alias: {
       "@gambit/sdk/testkit": r("packages/sdk/src/testkit/index.ts"),
       "@gambit/sdk": r("packages/sdk/src/index.ts"),
+      "@gambit/core/testkit": r("packages/core/src/testkit/storeContract.ts"),
       "@gambit/core": r("packages/core/src/index.ts"),
       "@gambit/ui": r("packages/ui/src/index.ts"),
       "@gambit/game-chess": r("packages/games/chess/src/index.ts"),

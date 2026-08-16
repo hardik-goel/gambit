@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { requireIdentity } from "@/lib/server/identity";
 import { deps } from "@/lib/server/table";
+import { displayName } from "@/lib/server/social";
 import { rateLimit } from "@/lib/server/rateLimit";
 
 export const runtime = "nodejs";
@@ -19,7 +20,7 @@ export async function POST(req: Request, ctx: { params: Promise<{ id: string }> 
   deps.broadcast.toRoom(id, {
     type: "chat",
     playerId: me.playerId,
-    name: me.name,
+    name: displayName(me.playerId, me.name),
     text,
     emote: body.emote,
     at: Date.now()

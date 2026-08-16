@@ -20,6 +20,12 @@ export interface Identity {
   name: string;
 }
 
+/**
+ * The cookie carries a name so that a first-time visitor has one before they
+ * have a profile. Once a profile exists it is the only source of truth — see
+ * `displayName` in `social.ts`, which every room-facing route uses.
+ */
+
 export async function readIdentity(): Promise<Identity | null> {
   const jar = await cookies();
   const pid = jar.get(PID_COOKIE)?.value;

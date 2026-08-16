@@ -18,6 +18,7 @@ import {
   type ShelfGame
 } from "@gambit/ui";
 import { addAnalyticsSink, track } from "@gambit/core";
+import { People, usePeople } from "./People";
 
 export function Lobby({ games }: { games: ShelfGame[] }) {
   const router = useRouter();
@@ -28,8 +29,9 @@ export function Lobby({ games }: { games: ShelfGame[] }) {
   const [error, setError] = useState<string | null>(null);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [code, setCode] = useState("");
-  const [name, setName] = useState("");
   const [waiting, setWaiting] = useState<Record<string, number>>({});
+  const [peopleOpen, setPeopleOpen] = useState(false);
+  const people = usePeople();
 
   useEffect(() => {
     // One sink, added once: the console in development, the endpoint in
@@ -51,10 +53,7 @@ export function Lobby({ games }: { games: ShelfGame[] }) {
 
   useEffect(() => {
     // Mint an identity on first visit so the first tap is already seated.
-    void fetch("/api/me")
-      .then((r) => r.json())
-      .then((me: { name: string }) => setName(me.name))
-      .catch(() => undefined);
+    void fetch("/api/me").catch(() => undefined);
 
     // Who is waiting, refreshed while the shelf is open.
     const poll = () =>
@@ -122,15 +121,6 @@ export function Lobby({ games }: { games: ShelfGame[] }) {
     router.push(`/r/${clean}`);
   }
 
-  async function rename(next: string) {
-    setName(next);
-    await fetch("/api/me", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ name: next })
-    });
-  }
-
   return (
     <main style={{ maxWidth: 1080, margin: "0 auto", padding: "20px 18px 64px" }}>
       <header
@@ -156,6 +146,20 @@ export function Lobby({ games }: { games: ShelfGame[] }) {
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+          <button
+            className="gambit-mini"
+            aria-label="You and your friends"
+            onClick={() => setPeopleOpen((s) => !s)}
+            style={
+              (people.data?.requests.length ?? 0) + (people.data?.invites.length ?? 0) > 0
+                ? { borderColor: "var(--accent)", color: "var(--accent)" }
+                : undefined
+            }
+          >
+            {people.data?.me.avatar ?? "🙂"}
+            {(people.data?.requests.length ?? 0) + (people.data?.invites.length ?? 0) > 0 &&
+              ` ${(people.data?.requests.length ?? 0) + (people.data?.invites.length ?? 0)}`}
+          </button>
           <ThemePicker />
           <button
             className="gambit-mini"
@@ -170,29 +174,20 @@ export function Lobby({ games }: { games: ShelfGame[] }) {
       {settingsOpen && (
         <div style={{ marginBottom: 18, display: "grid", gap: 12 }}>
           <SoundPanel />
-          <Panel style={{ padding: 16 }}>
-            <SmallCaps>you at the table</SmallCaps>
-            <input
-              value={name}
-              onChange={(e) => void rename(e.target.value)}
-              maxLength={24}
-              aria-label="Your display name"
-              style={{
-                marginTop: 8,
-                width: "100%",
-                background: "var(--panel2)",
-                border: "1px solid var(--line)",
-                color: "var(--ink)",
-                borderRadius: 8,
-                padding: "10px 12px",
-                fontFamily: "inherit",
-                fontSize: 15
-              }}
-            />
-          </Panel>
           <Button variant="ghost" onClick={() => update({ music: !settings.music })}>
             {settings.music ? "Stop the music" : "Put some music on"}
           </Button>
+        </div>
+      )}
+
+      {peopleOpen && (
+        <div style={{ marginBottom: 18 }}>
+          <People
+            data={people.data}
+            act={people.act}
+            onError={setError}
+            onJoin={(joinCode) => router.push(`/r/${joinCode}`)}
+          />
         </div>
       )}
 
