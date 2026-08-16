@@ -27,16 +27,33 @@ export function ThemePicker({ compact }: { compact?: boolean }) {
               setTheme(id as ThemeId);
               sfx("select");
             }}
+            // The dot stays small because a row of large discs would shout;
+            // the button around it is thumb-sized, because a 20px target is a
+            // 20px target however pretty it looks.
             style={{
-              width: compact ? 16 : 20,
-              height: compact ? 16 : 20,
+              width: 34,
+              height: 34,
+              display: "grid",
+              placeItems: "center",
               borderRadius: "50%",
               cursor: "pointer",
               padding: 0,
-              background: `linear-gradient(135deg, ${th.bg} 50%, ${th.accent} 50%)`,
-              border: on ? "2px solid var(--ink)" : "1px solid var(--line)"
+              background: "transparent",
+              border: "none"
             }}
-          />
+          >
+            <span
+              aria-hidden
+              style={{
+                display: "block",
+                width: compact ? 16 : 20,
+                height: compact ? 16 : 20,
+                borderRadius: "50%",
+                background: `linear-gradient(135deg, ${th.bg} 50%, ${th.accent} 50%)`,
+                border: on ? "2px solid var(--ink)" : "1px solid var(--line)"
+              }}
+            />
+          </motion.button>
         );
       })}
     </div>

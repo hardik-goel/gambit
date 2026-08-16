@@ -33,6 +33,42 @@ export function Lobby({ games }: { games: ShelfGame[] }) {
   const [peopleOpen, setPeopleOpen] = useState(false);
   const people = usePeople();
 
+  /**
+   * The shelf's selection lives in the address, so a game can be linked to,
+   * reloaded onto, and reached with the back button. Without it, "look at
+   * Landfall" could only ever be "go to Gambit, then find Landfall".
+   *
+   * Read after mount rather than in the initial state: the server has no
+   * address bar, so seeding state from one is a hydration mismatch by
+   * construction.
+   */
+  useEffect(() => {
+    const asked = new URLSearchParams(window.location.search).get("game");
+    if (asked && games.some((g) => g.id === asked)) setSelected(asked);
+    // Only on arrival; afterwards the effect below keeps the address in step.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Reflected with replaceState rather than a route change: the shelf is one
+  // screen, and pushing history for every spine would bury the way back out.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const url = new URL(window.location.href);
+    if (url.searchParams.get("game") === selected) return;
+    url.searchParams.set("game", selected);
+    window.history.replaceState(null, "", url);
+  }, [selected]);
+
+  // Someone arriving on a link, or pressing back, should land on that game.
+  useEffect(() => {
+    const onPop = (): void => {
+      const asked = new URLSearchParams(window.location.search).get("game");
+      if (asked && games.some((g) => g.id === asked)) setSelected(asked);
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, [games]);
+
   useEffect(() => {
     // One sink, added once: the console in development, the endpoint in
     // production. Nothing in the game ever waits on it.

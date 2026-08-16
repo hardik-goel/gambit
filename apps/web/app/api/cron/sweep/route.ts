@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { store } from "@/lib/server/table";
-import { sweepRoom } from "@/lib/server/sweep";
+import { sweepRoom, sweepStaleLobbies } from "@/lib/server/sweep";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -39,5 +39,9 @@ export async function GET(req: Request) {
     if (result.covered) covered++;
   }
 
-  return NextResponse.json({ swept: rooms.length, covered });
+  // And the lobbies nobody ever sat down at, which would otherwise stay on the
+  // shelf for ever.
+  const closed = await sweepStaleLobbies();
+
+  return NextResponse.json({ swept: rooms.length, covered, lobbiesClosed: closed });
 }

@@ -2,7 +2,7 @@
   "name": "gambit",
   "private": true,
   "version": "0.1.0",
-  "description": "Gambit — the one-stop multiplayer board-gaming platform.",
+  "description": "Gambit \u2014 the one-stop multiplayer board-gaming platform.",
   "packageManager": "pnpm@9.15.4",
   "engines": {
     "node": ">=20.11"
@@ -23,7 +23,8 @@
     "e2e:social": "tsx scripts/social-e2e.ts",
     "db:migrate": "tsx scripts/db-migrate.ts",
     "go-live": "tsx scripts/go-live.ts",
-    "preflight": "tsx scripts/preflight.ts"
+    "preflight": "tsx scripts/preflight.ts",
+    "sweep": "tsx scripts/sweep-screens.ts"
   },
   "devDependencies": {
     "@types/node": "^22.10.5",

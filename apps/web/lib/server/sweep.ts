@@ -60,3 +60,28 @@ export async function sweepRoom(roomId: string, now = Date.now()): Promise<Sweep
   });
   return { covered: true, remaining: room.turnTimeoutSec };
 }
+
+/**
+ * Tables nobody ever sat at.
+ *
+ * A lobby is created the moment somebody presses a game on the shelf, and it
+ * outlives them: close the tab before anyone joins and the room stays open for
+ * ever, offering a table that no longer exists to everybody who comes after.
+ *
+ * An hour of nobody being there is enough to say so. They are marked abandoned
+ * rather than deleted — a finished or abandoned room is still a record, and
+ * still something that can be reported — which is all it takes to get them off
+ * the shelf.
+ */
+export async function sweepStaleLobbies(now = Date.now()): Promise<number> {
+  const AN_HOUR = 60 * 60 * 1000;
+  let closed = 0;
+
+  for (const room of await store.listOpenRooms()) {
+    const lastSeen = Math.max(room.createdAt, ...room.players.map((p) => p.seenAt));
+    if (now - lastSeen < AN_HOUR) continue;
+    await store.updateRoom(room.id, { status: "abandoned" });
+    closed++;
+  }
+  return closed;
+}
