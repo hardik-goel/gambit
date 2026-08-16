@@ -144,6 +144,49 @@ function Table({
     if (state.rejection) setError(state.rejection);
   }, [state.rejection]);
 
+  /**
+   * The turn clock, driven by whoever is waiting on it.
+   *
+   * A serverless deployment has no process watching the tables, and the Hobby
+   * plan's cron runs once a day. So the people at the table ask instead: while
+   * the game is live and it is not our turn, we check whether the player to
+   * move has run out of time. The server decides from its own timestamps — this
+   * cannot bring anyone's clock forward, only notice that it has expired.
+   *
+   * The reply says how long is left, so the next question is asked when it is
+   * worth asking rather than on a fixed drum.
+   */
+  useEffect(() => {
+    if (room.status !== "playing" || room.turnTimeoutSec <= 0) return;
+    // Our own clock is our business; we only watch somebody else's.
+    if (snapshot.seat !== null && state.current.includes(snapshot.seat)) return;
+
+    let live = true;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+
+    const ask = async (): Promise<void> => {
+      if (!live || document.hidden) return schedule(15);
+      try {
+        const res = await fetch(`/api/rooms/${snapshot.room.id}/sweep`, { method: "POST" });
+        const body = (await res.json()) as { remaining: number | null };
+        schedule(Math.min(Math.max(body.remaining ?? 15, 5), 30));
+      } catch {
+        schedule(30); // offline, or the table has gone; try again later
+      }
+    };
+
+    const schedule = (seconds: number): void => {
+      if (!live) return;
+      timer = setTimeout(() => void ask(), seconds * 1000);
+    };
+
+    schedule(5);
+    return () => {
+      live = false;
+      if (timer) clearTimeout(timer);
+    };
+  }, [room.status, room.turnTimeoutSec, state.current, snapshot.seat, snapshot.room.id]);
+
   // The move-latency budget: p95 input-to-acknowledgement under 150ms in-region.
   useEffect(() => {
     if (state.pingMs === null) return;
