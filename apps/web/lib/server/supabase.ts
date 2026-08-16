@@ -128,15 +128,51 @@ const toRoom = (row: RoomRow, players: PlayerRow[]): Room => ({
   }))
 });
 
+/**
+ * Turns a PostgREST error into something a log will actually explain.
+ *
+ * Every write below used to discard its error, so a rejected insert looked
+ * exactly like a successful one until a later read came back empty and the
+ * caller reported "unknown room". That is how a foreign key nobody could
+ * satisfy stayed hidden through an entire build.
+ */
+function must(what: string, error: { message: string; code?: string; details?: string } | null): void {
+  if (!error) return;
+  throw new Error(`${what}: ${error.message}${error.code ? ` [${error.code}]` : ""}${error.details ? ` — ${error.details}` : ""}`);
+}
+
 export class SupabaseRoomStore implements RoomStore {
   constructor(private readonly db: GambitClient = serviceClient()) {}
 
+  /**
+   * A player must exist before they can sit down.
+   *
+   * Identity here is a cookie, not an account, so nothing else creates this
+   * row: the first time we see a player id, it becomes a profile. When
+   * accounts arrive they attach through `user_id` and this stays as it is.
+   */
+  private async ensureProfile(player: { playerId: string; name?: string; avatar?: string | null }): Promise<void> {
+    const { error } = await this.db.from("profiles").upsert(
+      {
+        id: player.playerId,
+        display_name: (player.name ?? "Guest").slice(0, 24) || "Guest",
+        avatar_url: player.avatar ?? null
+      },
+      { onConflict: "id", ignoreDuplicates: false }
+    );
+    must("could not record the player", error);
+  }
+
   private async load(where: "id" | "code", value: string): Promise<Room | null> {
-    const { data: room } = await this.db
+    const { data: room, error } = await this.db
       .from("rooms")
       .select("*")
       .eq(where, value)
       .maybeSingle<RoomRow>();
+    // A room id that is not even a uuid is a room that does not exist. It
+    // arrives from a URL, so it has to be a 404 and never a 500.
+    if (error?.code === "22P02") return null;
+    must("could not read the room", error);
     if (!room) return null;
     const { data: players } = await this.db
       .from("room_players")
@@ -146,7 +182,9 @@ export class SupabaseRoomStore implements RoomStore {
   }
 
   async createRoom(room: Room): Promise<Room> {
-    await this.db.from("rooms").insert({
+    const host = room.players.find((p) => p.playerId === room.hostId);
+    await this.ensureProfile({ playerId: room.hostId, name: host?.name, avatar: host?.avatar });
+    const { error } = await this.db.from("rooms").insert({
       id: room.id,
       code: room.code,
       game_id: room.gameId,
@@ -157,6 +195,7 @@ export class SupabaseRoomStore implements RoomStore {
       pass_and_play: room.passAndPlay,
       turn_timeout_sec: room.turnTimeoutSec
     });
+    must("could not create the room", error);
     for (const player of room.players) await this.upsertPlayer(room.id, player);
     return (await this.getRoom(room.id)) ?? room;
   }
@@ -178,14 +217,18 @@ export class SupabaseRoomStore implements RoomStore {
     if (patch.turnTimeoutSec !== undefined) row.turn_timeout_sec = patch.turnTimeoutSec;
     if ("startedAt" in patch) row.started_at = patch.startedAt ? new Date(patch.startedAt).toISOString() : null;
     if ("finishedAt" in patch) row.finished_at = patch.finishedAt ? new Date(patch.finishedAt).toISOString() : null;
-    if (Object.keys(row).length) await this.db.from("rooms").update(row).eq("id", id);
+    if (Object.keys(row).length) {
+      const { error } = await this.db.from("rooms").update(row).eq("id", id);
+      must("could not update the room", error);
+    }
     const room = await this.getRoom(id);
     if (!room) throw new Error(`unknown room: ${id}`);
     return room;
   }
 
   async upsertPlayer(roomId: string, player: RoomPlayer): Promise<Room> {
-    await this.db.from("room_players").upsert(
+    await this.ensureProfile(player);
+    const { error } = await this.db.from("room_players").upsert(
       {
         room_id: roomId,
         player_id: player.playerId,
@@ -200,13 +243,19 @@ export class SupabaseRoomStore implements RoomStore {
       },
       { onConflict: "room_id,player_id" }
     );
+    must("could not seat the player", error);
     const room = await this.getRoom(roomId);
     if (!room) throw new Error(`unknown room: ${roomId}`);
     return room;
   }
 
   async removePlayer(roomId: string, playerId: string): Promise<Room> {
-    await this.db.from("room_players").delete().eq("room_id", roomId).eq("player_id", playerId);
+    const { error } = await this.db
+      .from("room_players")
+      .delete()
+      .eq("room_id", roomId)
+      .eq("player_id", playerId);
+    must("could not remove the player", error);
     const room = await this.getRoom(roomId);
     if (!room) throw new Error(`unknown room: ${roomId}`);
     return room;
@@ -228,12 +277,13 @@ export class SupabaseRoomStore implements RoomStore {
   }
 
   async putSnapshot(snap: Snapshot): Promise<void> {
-    await this.db.from("games").upsert({
+    const { error } = await this.db.from("games").upsert({
       room_id: snap.roomId,
       version: snap.version,
       state: snap.state,
       updated_at: new Date(snap.updatedAt).toISOString()
     });
+    must("could not save the game state", error);
   }
 
   /** One transaction: check the version, write the events, the move and the state. */
@@ -249,8 +299,14 @@ export class SupabaseRoomStore implements RoomStore {
     });
 
     if (error) {
-      // 40001 is the serialization failure the function raises on a stale read.
-      if (error.code === "40001" || error.message.includes("version conflict")) {
+      // PT409 is what the function raises on a stale read, and PostgREST turns
+      // it into a 409. It used to raise 40001, which the stack retries as a
+      // transient serialization failure — see migration 0004.
+      if (
+        error.code === "PT409" ||
+        error.code === "40001" ||
+        error.message.includes("version conflict")
+      ) {
         const snap = await this.getSnapshot(input.roomId);
         throw new VersionConflictError(input.expectedVersion, snap?.version ?? -1);
       }
@@ -340,13 +396,14 @@ export class SupabaseRoomStore implements RoomStore {
 
   async recordResult(roomId: string, result: unknown): Promise<void> {
     const payload = result as { gameId: string; seed: string; scores: unknown; seats: unknown };
-    await this.db.from("game_results").insert({
+    const { error } = await this.db.from("game_results").insert({
       room_id: roomId,
       game_id: payload.gameId,
       seed: payload.seed,
       scores: payload.scores,
       seats: payload.seats
     });
+    must("could not record the result", error);
   }
 }
 

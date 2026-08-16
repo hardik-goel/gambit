@@ -21,6 +21,17 @@ export interface Identity {
 }
 
 /**
+ * A player id is a uuid and nothing else.
+ *
+ * It used to carry a `p_` prefix, which read nicely and could never be stored:
+ * every column that holds a player id is a `uuid`, so the prefix made the
+ * production schema unusable by the product. The prefix is gone; ids that
+ * still have one are treated as absent, and the holder is issued a new one.
+ */
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+export const isPlayerId = (value: string): boolean => UUID.test(value);
+
+/**
  * The cookie carries a name so that a first-time visitor has one before they
  * have a profile. Once a profile exists it is the only source of truth — see
  * `displayName` in `social.ts`, which every room-facing route uses.
@@ -29,7 +40,7 @@ export interface Identity {
 export async function readIdentity(): Promise<Identity | null> {
   const jar = await cookies();
   const pid = jar.get(PID_COOKIE)?.value;
-  if (!pid) return null;
+  if (!pid || !isPlayerId(pid)) return null;
   return { playerId: pid, name: jar.get(NAME_COOKIE)?.value ?? "Guest" };
 }
 
@@ -38,7 +49,7 @@ export async function requireIdentity(): Promise<Identity> {
   const existing = await readIdentity();
   if (existing) return existing;
   const jar = await cookies();
-  const playerId = `p_${crypto.randomUUID()}`;
+  const playerId = crypto.randomUUID();
   const name = NAMES[Math.floor(Math.random() * NAMES.length)] as string;
   const opts = {
     httpOnly: false, // the client reads its own id to address its private channel

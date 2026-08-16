@@ -21,13 +21,28 @@ export interface ContractCase {
   run(store: RoomStore): Promise<void>;
 }
 
+/**
+ * The prefix every room this contract creates shares.
+ *
+ * A store that keeps what it is given — the production one — is still holding
+ * these rooms after the run, where they would show up as real open tables. The
+ * prefix is how they are found again and cleared out, and it is why the ids are
+ * not simply random.
+ */
+export const CONTRACT_ROOM_PREFIX = "00000000-0000-4000-8000-";
+
 let counter = 0;
+const hex = (n: number): string =>
+  Array.from({ length: n }, () => "0123456789abcdef"[Math.floor(Math.random() * 16)]).join("");
+
 function sampleRoom(): Room {
   counter++;
   const at = Date.now();
+  // Unique per run: against a database that persists, fixed ids collide with
+  // the previous run rather than testing anything.
   return {
-    id: `00000000-0000-4000-8000-${String(counter).padStart(12, "0")}`,
-    code: `T${String(counter).padStart(5, "0")}`.toUpperCase().slice(0, 6),
+    id: `${CONTRACT_ROOM_PREFIX}${hex(12)}`,
+    code: hex(6).toUpperCase().replace(/[^A-Z0-9]/g, "0").slice(0, 6),
     gameId: "chess",
     hostId: "host",
     status: "lobby",

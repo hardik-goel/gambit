@@ -1,6 +1,6 @@
-import { describe, it } from "vitest";
-import { STORE_CONTRACT } from "@gambit/core/testkit";
-import { SupabaseRoomStore, hasSupabase } from "./supabase";
+import { afterAll, describe, it } from "vitest";
+import { CONTRACT_ROOM_PREFIX, STORE_CONTRACT } from "@gambit/core/testkit";
+import { SupabaseRoomStore, hasSupabase, serviceClient } from "./supabase";
 
 /**
  * The production store, held to exactly the contract the in-process one is.
@@ -13,6 +13,9 @@ import { SupabaseRoomStore, hasSupabase } from "./supabase";
  * The schema itself is verified separately, and without any project at all, by
  * `pnpm db:check`, which applies the migrations to a real Postgres and
  * exercises the atomic append.
+ *
+ * This runs against a real project, so it cleans up after itself: a room left
+ * behind is not litter, it is an open table a player could walk into.
  */
 const configured = hasSupabase();
 
@@ -22,6 +25,13 @@ describe.skipIf(!configured)("the Supabase store", () => {
       await example.run(new SupabaseRoomStore());
     });
   }
+
+  afterAll(async () => {
+    const db = serviceClient();
+    // Rooms cascade to players, state, events, moves and results.
+    await db.from("rooms").delete().like("id", `${CONTRACT_ROOM_PREFIX}%`);
+    await db.from("profiles").delete().in("id", ["host", "bo"]);
+  });
 });
 
 describe.runIf(!configured)("the Supabase store (not configured)", () => {
