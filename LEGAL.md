@@ -53,6 +53,21 @@ their own local audio files; those are read as object URLs on the device and are
 
 ## Data protection (DPDP)
 
-We collect a display name and a random player id. Accounts, when enabled, add an
-email address. Export and delete-account endpoints ship from day one. Game event
-logs are retained for replay and anti-cheat and are deleted with the account.
+We collect a display name, an emoji and a random player id. Accounts, when
+enabled, will add an email address; today there are none, and clearing your
+cookies is already the end of you as far as Gambit is concerned.
+
+**Export**: `GET /api/me/data` returns everything held about the caller as a
+file — profile, friends, blocks, invites, ratings and open tables. It is offered
+from the people panel as "Download everything we hold".
+
+**Deletion**: `DELETE /api/me/data` erases the profile, the friendships, the
+blocks, the invites and the ratings, removes the player from any open table and
+clears their identity. The next visit is a stranger with a new id and a new
+friend code.
+
+One thing is deliberately *not* deleted, and the endpoint says so in its own
+response: a finished game is also the other players' record of their evening.
+Those are kept, with the departing player's seat unlinked from them and renamed
+"Former player" — so nothing points back, and nobody else loses their replay.
+Event logs are retained for replay and anti-cheat under the same rule.

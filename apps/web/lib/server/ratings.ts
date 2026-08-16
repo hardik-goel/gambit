@@ -38,6 +38,22 @@ export interface LeaderboardRow {
   rating: Rating;
 }
 
+/** Every rating this player holds, for the data export. */
+export function exportRatings(playerId: string): Record<string, Rating> {
+  const out: Record<string, Rating> = {};
+  for (const [k, rating] of store.entries()) {
+    const [gameId, id] = [k.slice(0, k.indexOf(":")), k.slice(k.indexOf(":") + 1)];
+    if (id === playerId) out[gameId!] = rating;
+  }
+  return out;
+}
+
+export function eraseRatings(playerId: string): void {
+  for (const k of [...store.keys()]) {
+    if (k.slice(k.indexOf(":") + 1) === playerId) store.delete(k);
+  }
+}
+
 export function leaderboard(gameId: string, limit = 20): LeaderboardRow[] {
   return [...store.entries()]
     .filter(([k]) => k.startsWith(`${gameId}:`))

@@ -271,6 +271,33 @@ export function People({
         </div>
       )}
 
+      <div style={{ display: "grid", gap: 6 }}>
+        <SmallCaps>your data</SmallCaps>
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+          <a
+            className="gambit-mini"
+            href="/api/me/data"
+            style={{ textDecoration: "none", display: "inline-block" }}
+          >
+            Download everything we hold
+          </a>
+          <button
+            className="gambit-mini"
+            style={{ borderColor: "#b1503f", color: "#d1685c" }}
+            onClick={async () => {
+              if (!confirm("Delete your profile, friends, blocks and ratings? This cannot be undone.")) return;
+              await fetch("/api/me/data", { method: "DELETE" });
+              location.reload();
+            }}
+          >
+            Delete my account
+          </button>
+        </div>
+        <span style={{ fontSize: 12, color: "var(--mut)" }}>
+          Finished games stay — they're other players' records too — with your seat unlinked from you.
+        </span>
+      </div>
+
       {data.blocked.length > 0 && (
         <div style={{ display: "grid", gap: 6 }}>
           <SmallCaps>blocked</SmallCaps>

@@ -194,3 +194,49 @@ export function rememberResult(gameId: string, seats: { playerId: string; name: 
 }
 
 export const recentFor = (playerId: string) => recentPlayers(state.results, playerId);
+
+/* ------------------------------------------------------- data protection */
+
+/** Everything the social layer holds about one person. */
+export function exportSocial(playerId: string): Record<string, unknown> {
+  return {
+    profile: state.profiles.get(playerId) ?? null,
+    friends: friendsOf(playerId).map((p) => ({ playerId: p.playerId, name: p.name })),
+    requestsReceived: requestsFor(playerId).map((r) => ({ from: r.from.name, at: r.at })),
+    requestsSent: requestsFrom(playerId).map((p) => p.name),
+    blocked: [...(state.blocks.get(playerId) ?? [])],
+    invites: state.invites.filter((i) => i.to === playerId || i.from === playerId),
+    playedWith: recentFor(playerId)
+  };
+}
+
+/**
+ * Erase one person from the social layer.
+ *
+ * Their own record goes entirely. What is *shared* — a friendship, a game they
+ * played in — is unlinked rather than rewritten, because a finished game is
+ * also the other players' record of their evening and deleting it would take
+ * their history away with yours.
+ */
+export function eraseSocial(playerId: string): void {
+  const profile = state.profiles.get(playerId);
+  if (profile) state.byFriendCode.delete(profile.friendCode);
+  state.profiles.delete(playerId);
+
+  state.friendships = state.friendships.filter(
+    (f) => f.requesterId !== playerId && f.addresseeId !== playerId
+  );
+  state.blocks.delete(playerId);
+  for (const set of state.blocks.values()) set.delete(playerId);
+  state.invites = state.invites.filter((i) => i.to !== playerId && i.from !== playerId);
+
+  // Past tables keep their shape; the person in them becomes nobody.
+  for (const result of state.results) {
+    for (const seat of result.seats) {
+      if (seat.playerId === playerId) {
+        seat.playerId = `erased:${Math.random().toString(36).slice(2, 10)}`;
+        seat.name = "Former player";
+      }
+    }
+  }
+}

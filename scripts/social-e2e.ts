@@ -155,6 +155,36 @@ async function main(): Promise<void> {
     await post("ada", { action: "unblock", playerId: cy.me.playerId });
     const unblocked = await json<Social>("ada", "/api/social");
     check("unblocking undoes it", unblocked.blocked.length === 0);
+
+    /* ---- your data: all of it, or none of it ---- */
+    const exported = await call("ada", "/api/me/data");
+    const dump = (await exported.json()) as {
+      identity: { playerId: string };
+      social: { profile: { name: string } | null; friends: unknown[] };
+      ratings: Record<string, unknown>;
+    };
+    check(
+      "a player can download everything held about them",
+      dump.identity.playerId.length > 0 && dump.social.profile?.name === "Ada",
+      `${dump.social.friends.length} friends included`
+    );
+    check(
+      "the export is offered as a file",
+      (exported.headers.get("content-disposition") ?? "").includes("gambit-my-data.json")
+    );
+
+    const erased = await call("bo", "/api/me/data", { method: "DELETE" });
+    check("a player can delete their account", erased.ok);
+
+    // Bo is gone from Ada's friends, and Bo is a stranger again.
+    const afterErase = await json<Social>("ada", "/api/social");
+    check("deleting takes them out of everybody's friends list", afterErase.friends.length === 0);
+
+    const boAgain = await json<Social>("bo", "/api/social");
+    check(
+      "and they come back as somebody new, not their old self",
+      boAgain.me.playerId !== bo.me.playerId && boAgain.me.friendCode !== bo.me.friendCode
+    );
   } finally {
     server.kill("SIGTERM");
   }
