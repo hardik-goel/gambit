@@ -52,6 +52,7 @@ interface Finding {
   detail: string;
 }
 
+let brokenServer = false;
 const findings: Finding[] = [];
 const note = (f: Finding): void => {
   findings.push(f);
@@ -83,6 +84,19 @@ function watch(page: Page, screen: string, viewport: string): void {
   });
   page.on("response", (response) => {
     if (response.status() < 400) return;
+    // The server's own build artefacts going missing is not a finding about
+    // the product — it means the server is broken underneath us (building
+    // while `next dev` runs will do it). Say so once, loudly, rather than
+    // reporting several hundred consequences of it.
+    if (response.url().includes("/_next/static/")) {
+      if (!brokenServer) {
+        brokenServer = true;
+        console.error(
+          "\nThe dev server is not serving its own assets — restart it before sweeping.\n"
+        );
+      }
+      return;
+    }
     if (response.url().includes("/api/social")) return; // polled before identity exists
     note({ screen, viewport, kind: "network", detail: `HTTP ${response.status()} ${response.url().slice(0, 120)}` });
   });
@@ -237,6 +251,10 @@ async function main(): Promise<void> {
 
   writeFileSync(join(OUT, "findings.json"), JSON.stringify(findings, null, 2));
   console.log(`\nscreenshots and findings.json in .sweep/`);
+  if (brokenServer) {
+    console.error("this run is not trustworthy: the server was not serving its own assets");
+    process.exit(1);
+  }
   const byKind = new Map<string, number>();
   for (const f of findings) byKind.set(f.kind, (byKind.get(f.kind) ?? 0) + 1);
   if (!findings.length) {

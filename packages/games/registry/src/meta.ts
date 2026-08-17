@@ -18,7 +18,7 @@ export const SHELF_META: ShelfGame[] = [
     "badges": [
       "Ranked"
     ],
-    "hue": "#8a8474",
+    "hue": "#7d6a52",
     "felt": "#241a12",
     "minPlayers": 2,
     "maxPlayers": 2

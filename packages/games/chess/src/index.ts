@@ -56,7 +56,10 @@ export const chess: GameDefinition<ChessState, ChessMove, ChessView> = {
     avgMinutes: 15,
     complexity: 3,
     badges: ["Ranked"],
-    themeTokens: { hue: "#8a8474", felt: "#241a12", accent: "#d1b688" }
+    // Walnut rather than concrete. Chess is the shelf's first spine and its
+    // default selection, so its colour is the first thing anybody sees; a
+    // desaturated grey beside ten saturated neighbours read as switched off.
+    themeTokens: { hue: "#7d6a52", felt: "#241a12", accent: "#d1b688" }
   },
   configSchema,
   createState,

@@ -311,7 +311,9 @@ function GameCard({
       <div style={{ display: "flex", flexWrap: "wrap" }}>
         <div
           style={{
-            flex: "0 0 230px",
+            // Grows once it wraps. Fixed at 230px it kept that width on its own
+            // line on a phone, leaving a dead strip of panel beside the cover.
+            flex: "1 1 230px",
             minHeight: 200,
             background: `linear-gradient(145deg, ${game.hue}, ${game.hue}88 68%, ${game.felt})`,
             display: "flex",
