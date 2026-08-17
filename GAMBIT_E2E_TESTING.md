@@ -1,4 +1,4 @@
-# Testing Gambit
+# Gambit — end-to-end testing
 
 Nine layers, each answering a question the one below it cannot. They are listed
 in the order they catch things, which is also the order to run them.

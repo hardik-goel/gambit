@@ -86,4 +86,6 @@ with no internet at all.
 - [CREDITS.md](CREDITS.md) — where everything came from
 - [ADDING_A_GAME.md](ADDING_A_GAME.md) — the plugin path
 - [DEPLOY.md](DEPLOY.md) — the two ways to host it, and what each costs you
+- [GAMBIT_E2E_TESTING.md](GAMBIT_E2E_TESTING.md) — the nine layers of checks,
+  what each catches, and what is still not covered
 - [ROADMAP.md](ROADMAP.md) — what's next
