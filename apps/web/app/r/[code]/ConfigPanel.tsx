@@ -38,9 +38,15 @@ export function describeSchema(schema: ZodTypeAny): Field[] {
   const fields: Field[] = [];
   for (const [key, raw] of Object.entries(shape)) {
     const { inner, description } = unwrap(raw);
+    // camelCase splits on capitals, but a digit is neither: `seat0Color`
+    // came out as "Seat0 Color". Seats are numbered from one everywhere a
+    // player can see them, so the index is shown the way the seat list shows
+    // it rather than the way the state stores it.
     const label = key
       .replace(/([A-Z])/g, " $1")
+      .replace(/(\d+)/g, (digits) => ` ${Number(digits) + 1}`)
       .replace(/^./, (c) => c.toUpperCase())
+      .replace(/\s+/g, " ")
       .trim();
     if (inner instanceof z.ZodEnum) {
       fields.push({ key, label, kind: "enum", options: inner.options as string[], description });

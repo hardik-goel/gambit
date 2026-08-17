@@ -20,10 +20,16 @@ import {
 import { addAnalyticsSink, track } from "@gambit/core";
 import { People, usePeople } from "./People";
 
-export function Lobby({ games }: { games: ShelfGame[] }) {
+export function Lobby({
+  games,
+  initialGameId
+}: {
+  games: ShelfGame[];
+  initialGameId?: string;
+}) {
   const router = useRouter();
   const { settings, update } = useAudio();
-  const [selected, setSelected] = useState(games[0]?.id ?? "chess");
+  const [selected, setSelected] = useState(initialGameId ?? games[0]?.id ?? "chess");
   const [invite, setInvite] = useState<{ code: string; id: string; mode: "here" | "online" } | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -32,22 +38,6 @@ export function Lobby({ games }: { games: ShelfGame[] }) {
   const [waiting, setWaiting] = useState<Record<string, number>>({});
   const [peopleOpen, setPeopleOpen] = useState(false);
   const people = usePeople();
-
-  /**
-   * The shelf's selection lives in the address, so a game can be linked to,
-   * reloaded onto, and reached with the back button. Without it, "look at
-   * Landfall" could only ever be "go to Gambit, then find Landfall".
-   *
-   * Read after mount rather than in the initial state: the server has no
-   * address bar, so seeding state from one is a hydration mismatch by
-   * construction.
-   */
-  useEffect(() => {
-    const asked = new URLSearchParams(window.location.search).get("game");
-    if (asked && games.some((g) => g.id === asked)) setSelected(asked);
-    // Only on arrival; afterwards the effect below keeps the address in step.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   // Reflected with replaceState rather than a route change: the shelf is one
   // screen, and pushing history for every spine would bury the way back out.
