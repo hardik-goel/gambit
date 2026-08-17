@@ -38,9 +38,20 @@ first and originate the second, entirely.
    from a CC0/public-domain source recorded in `CREDITS.md`.
 3. Rule text in the app is written in our own words. We do not reproduce
    published rulebooks.
-4. Comparative statements ("if you like X, try Boxcar") are avoided in product
-   surfaces. Nominative comparison is legally defensible but commercially
-   pointless and invites disputes we gain nothing from winning.
+4. Comparative statements appear in exactly one place: `/compare`, which names
+   the well-known games ours resemble so that a newcomer can find their way in.
+   This is **nominative use** — naming a product to describe a real similarity
+   to it — and it is defensible only while the page makes all three of these
+   plain, which it does:
+
+   - the games here are ours: our rules text, our maps, our art;
+   - the names belong to their publishers, and are attributed to them;
+   - there is no affiliation, endorsement or sponsorship, and the page says so.
+
+   Nowhere else. Not on the shelf, not on a felt, not in a tutorial, not in a
+   game's name, not in an identifier, not in a commit message. The containment
+   is the point: one page a reader chooses to open is a description; the same
+   words on the shelf would be trading on somebody else's name.
 5. Public-domain games (Chess, and any others added later) are labelled as such.
 
 ## Audio and music

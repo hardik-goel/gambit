@@ -265,6 +265,26 @@ export function Lobby({
         />
       )}
 
+      {/* Quietly placed, and quietly worded: a newcomer who recognises a genre
+          finds their way in faster, and everybody else never has to look. */}
+      <footer
+        style={{
+          marginTop: 30,
+          display: "flex",
+          gap: 16,
+          justifyContent: "center",
+          fontSize: 12.5,
+          color: "var(--mut)"
+        }}
+      >
+        <a href="/compare" style={{ color: "inherit" }}>
+          If you already know these games
+        </a>
+        <a href="/learn" style={{ color: "inherit" }}>
+          Learn one in two minutes
+        </a>
+      </footer>
+
       <Toast message={error} onDone={() => setError(null)} />
     </main>
   );
