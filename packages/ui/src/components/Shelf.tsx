@@ -15,6 +15,8 @@ export interface ShelfGame {
   id: string;
   name: string;
   tagline: string;
+  /** What kind of game it is, in plain words. */
+  kind: string;
   blurb: string;
   players: string;
   minutes: number;
@@ -348,6 +350,19 @@ function GameCard({
         </div>
 
         <div style={{ flex: "1 1 340px", padding: "20px 22px" }}>
+          {/* An original name says nothing about what is inside the box. This
+              does, before any of the numbers do. */}
+          <div
+            style={{
+              fontSize: 13,
+              letterSpacing: "0.06em",
+              textTransform: "uppercase",
+              color: "var(--accent)",
+              marginBottom: 10
+            }}
+          >
+            {game.kind}
+          </div>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 12 }}>
             <Meta label={`${game.players} players`} />
             <Meta label={`~${game.minutes} min`} />

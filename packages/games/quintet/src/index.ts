@@ -37,6 +37,7 @@ export const quintet: GameDefinition<QuintetState, QuintetMove, QuintetView> = {
   meta: {
     name: "Quintet",
     tagline: "Cards down, five in a row",
+    kind: "Card-driven board game · five in a row",
     blurb: "Play a card, place a chip, read the board. Team play at its purest.",
     minPlayers: 2,
     maxPlayers: 12,

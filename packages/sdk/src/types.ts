@@ -184,6 +184,17 @@ export interface BoardProps<V, M> {
 export interface GameMeta {
   name: string;
   tagline: string;
+  /**
+   * What kind of game this is, in the words somebody would use who had never
+   * heard of it. The names are original, which means they carry no hint of
+   * what is inside; a tagline sets the mood but does not say "this is a
+   * deduction game". This does, in two or three plain words.
+   *
+   * Never a comparison to another product. Mechanics are not protectable and
+   * ours are our own, but the names of the games these resemble belong to
+   * their publishers — see LEGAL.md.
+   */
+  kind: string;
   blurb: string;
   minPlayers: number;
   maxPlayers: number;

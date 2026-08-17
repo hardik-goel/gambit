@@ -50,6 +50,7 @@ export const chess: GameDefinition<ChessState, ChessMove, ChessView> = {
   meta: {
     name: "Chess",
     tagline: "The eternal duel",
+    kind: "Classic strategy · two players",
     blurb: "Full classical rules, blitz and rapid clocks, and a ladder worth climbing.",
     minPlayers: 2,
     maxPlayers: 2,

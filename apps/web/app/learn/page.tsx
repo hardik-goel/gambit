@@ -68,6 +68,9 @@ export default function LearnIndex() {
                 />
                 <span style={{ fontSize: 17, letterSpacing: "0.02em" }}>{game.name}</span>
               </span>
+              <span style={{ fontSize: 12.5, color: "var(--accent)", letterSpacing: "0.04em" }}>
+                {game.kind}
+              </span>
               <span style={{ fontSize: 13.5, color: "var(--mut)", lineHeight: 1.5 }}>
                 {game.tagline}
               </span>

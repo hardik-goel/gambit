@@ -37,6 +37,7 @@ export const landfall: GameDefinition<LandfallState, LandfallMove, LandfallView>
   meta: {
     name: "Landfall",
     tagline: "Settle, trade, out-build the island",
+    kind: "Resource trading · build a settlement",
     blurb: "Roll for resources, cut deals at the table, race to ten victory points.",
     minPlayers: 3,
     maxPlayers: 4,

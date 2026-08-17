@@ -37,6 +37,7 @@ export const boxcar: GameDefinition<BoxcarState, BoxcarMove, BoxcarView> = {
   meta: {
     name: "Boxcar",
     tagline: "Claim routes, connect the map",
+    kind: "Route building · collect and claim",
     blurb: "Draw cards, claim rail lines, complete secret tickets across three continents.",
     minPlayers: 2,
     maxPlayers: 5,

@@ -63,15 +63,16 @@ class Player {
 }
 
 async function main(): Promise<void> {
-  console.log(`two players against ${BASE}\n`);
+  console.log(`two players against ${BASE}${process.env.SMOKE_GAME ? ` · ${process.env.SMOKE_GAME}` : ""}\n`);
 
   const host = new Player("host");
   const guest = new Player("guest");
 
   /* ---- the host opens a table ---- */
+  const gameId = process.env.SMOKE_GAME ?? "chess";
   const opened = await host.fetch("/api/rooms", {
     method: "POST",
-    body: JSON.stringify({ gameId: "chess" })
+    body: JSON.stringify({ gameId })
   });
   const room = opened.body?.room as { id: string; code: string } | undefined;
   check("the host opens a table", Boolean(room), room?.code);
@@ -111,10 +112,22 @@ async function main(): Promise<void> {
     check(`the ${label} says they are ready`, ready.status === 200, `HTTP ${ready.status}`);
   }
 
-  const started = await host.fetch(`/api/rooms/${room.id}/action`, {
+  // Games with a minimum above two need the empty chairs filled before they
+  // will deal; a bot is what a real host would put there too.
+  let started = await host.fetch(`/api/rooms/${room.id}/action`, {
     method: "POST",
     body: JSON.stringify({ action: "start" })
   });
+  if (started.status !== 200) {
+    await host.fetch(`/api/rooms/${room.id}/action`, {
+      method: "POST",
+      body: JSON.stringify({ action: "fill" })
+    });
+    started = await host.fetch(`/api/rooms/${room.id}/action`, {
+      method: "POST",
+      body: JSON.stringify({ action: "start" })
+    });
+  }
   check("the host deals", started.status === 200, `HTTP ${started.status}`);
 
   const afterStart = await host.fetch(`/api/rooms/${room.id}`);

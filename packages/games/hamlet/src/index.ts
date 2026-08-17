@@ -36,6 +36,7 @@ export const hamlet: GameDefinition<HamletState, HamletMove, HamletView> = {
   meta: {
     name: "Hamlet",
     tagline: "Lay the land, tile by tile",
+    kind: "Tile laying · build a countryside",
     blurb: "Grow a countryside of roads and keeps, and claim it with your meeples.",
     minPlayers: 2,
     maxPlayers: 5,

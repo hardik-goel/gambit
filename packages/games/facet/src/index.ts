@@ -36,6 +36,7 @@ export const facet: GameDefinition<FacetState, FacetMove, FacetView> = {
   meta: {
     name: "Facet",
     tagline: "Build a jewel of an engine",
+    kind: "Engine building · gems, cards and patrons",
     blurb: "Collect gems, chain discounts, court the patrons, hit fifteen prestige first.",
     minPlayers: 2,
     maxPlayers: 4,

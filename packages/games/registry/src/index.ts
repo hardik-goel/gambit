@@ -61,6 +61,7 @@ export function shelfEntries() {
       id,
       name: g.meta.name,
       tagline: g.meta.tagline,
+      kind: g.meta.kind,
       blurb: g.meta.blurb,
       players:
         g.meta.minPlayers === g.meta.maxPlayers
