@@ -74,6 +74,11 @@ export function Board({ view, legal, seat, play, sfx, reducedMotion, pending }: 
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(8, 1fr)",
+          // Rows as well as columns. With only columns declared, the rows size
+          // themselves to their contents inside the square: ranks holding
+          // pieces grew and the empty middle of the board collapsed, so on a
+          // phone a chessboard was visibly not made of squares.
+          gridTemplateRows: "repeat(8, 1fr)",
           width: "min(92vw, 560px)", maxWidth: "100%",
           aspectRatio: "1",
           borderRadius: 10,

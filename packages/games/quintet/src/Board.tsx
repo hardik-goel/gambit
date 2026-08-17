@@ -63,6 +63,7 @@ export function Board({ view, legal, play, sfx, reducedMotion }: BoardProps<Quin
         style={{
           display: "grid",
           gridTemplateColumns: `repeat(${SIZE}, 1fr)`,
+          gridTemplateRows: `repeat(${SIZE}, 1fr)`,
           gap: 2,
           width: "min(94vw, 580px)", maxWidth: "100%",
           aspectRatio: "1",
