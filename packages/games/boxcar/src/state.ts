@@ -36,7 +36,9 @@ import {
 } from "./maps";
 
 export const configSchema = z.object({
-  map: z.enum(["continental", "frontier", "subcontinent"]).default("continental"),
+  map: z
+    .enum(["continental", "frontier", "subcontinent", "meridian", "archipelago", "nordic"])
+    .default("continental"),
   /** Cars per player: fewer cars, shorter game. */
   cars: z.enum(["45", "30", "20"]).default("45"),
   /** Ten points for the most completed tickets. */

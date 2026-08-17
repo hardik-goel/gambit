@@ -21,13 +21,31 @@ function drafted(seats = seats2, cfg = config, seed = "s"): BoxcarState {
 }
 
 describe("the maps", () => {
-  it("ships all three at the sizes the design calls for", () => {
-    expect(MAPS.continental!.cities).toHaveLength(33);
-    expect(MAPS.continental!.routes).toHaveLength(59);
-    expect(MAPS.frontier!.cities).toHaveLength(33);
-    expect(MAPS.frontier!.routes).toHaveLength(89);
-    expect(MAPS.subcontinent!.cities).toHaveLength(26);
-    expect(MAPS.subcontinent!.routes).toHaveLength(47);
+  it("ships all six at the sizes the design calls for", () => {
+    const sizes: Record<string, [number, number]> = {
+      continental: [33, 59],
+      frontier: [33, 89],
+      subcontinent: [26, 47],
+      meridian: [35, 91],
+      archipelago: [28, 75],
+      nordic: [31, 77]
+    };
+    for (const [id, [cities, routes]] of Object.entries(sizes)) {
+      expect(MAPS[id]!.cities, `${id} cities`).toHaveLength(cities);
+      expect(MAPS[id]!.routes, `${id} routes`).toHaveLength(routes);
+    }
+    expect(Object.keys(MAPS)).toHaveLength(6);
+  });
+
+  it("gives a full table enough track to reach an ending", () => {
+    // Continental runs a five-player game out of routes before anybody runs out
+    // of cars, and the game ends on exhaustion rather than on a finish. A map
+    // offered at five needs roughly twice the cars in play available as track.
+    for (const map of Object.values(MAPS)) {
+      const track = map.routes.reduce((n, r) => n + r.len, 0);
+      if (map.routes.length < 70) continue;
+      expect(track, `${map.id} has only ${track} track`).toBeGreaterThan(140);
+    }
   });
 
   it("is one connected network per map, with every ticket solvable", () => {
@@ -331,7 +349,9 @@ describe("boxcar as a Gambit game", () => {
   });
 
   it("finishes bot games on every map and table size", () => {
-    for (const map of ["continental", "frontier", "subcontinent"]) {
+    // Every map, not the three that happened to exist when this was written:
+    // a map nobody simulates is a map nobody has played.
+    for (const map of Object.keys(MAPS)) {
       for (const seats of [2, 4]) {
         const batch = simulateMany(boxcar, 6, {
           seats,
@@ -373,6 +393,20 @@ describe("boxcar as a Gambit game", () => {
     expect(current.finished).toBe(true);
     // And it still scores properly rather than just stopping.
     expect(boxcar.score(current)).toHaveLength(5);
+  });
+
+  it("finishes a five-player game on every map that offers one", () => {
+    // Five players is where a thin map shows: the routes run out before the
+    // cars do and the game ends by exhaustion rather than by anybody finishing.
+    for (const map of Object.keys(MAPS)) {
+      const batch = simulateMany(boxcar, 4, {
+        seats: 5,
+        level: 2,
+        config: { map, cars: "20" },
+        maxPly: 6000
+      });
+      expect(batch.failures.map((f) => f.error), `${map} @ 5`).toEqual([]);
+    }
   });
 
   it("finishes bot games at a full table, where the map is the constraint", () => {

@@ -36,12 +36,12 @@ export const SHELF_META: ShelfGame[] = [
       "title": "Ticket to Ride",
       "publisher": "Days of Wonder"
     },
-    "blurb": "Draw cards, claim rail lines, complete secret tickets across three continents.",
+    "blurb": "Draw cards, claim rail lines, complete secret tickets across six maps.",
     "players": "2–5",
     "minutes": 45,
     "complexity": 2,
     "badges": [
-      "3 maps"
+      "6 maps"
     ],
     "hue": "#b08d3f",
     "felt": "#14202e",

@@ -1,13 +1,16 @@
 /**
- * Boxcar's three maps.
+ * Boxcar's six maps.
  *
  * The data lives in `maps/*.json` — cities with coordinates, routes with
  * length, colour, tunnel and ferry flags, and the destination tickets. All of
  * it is original to Gambit (see LEGAL.md); none of it is transcribed from any
  * published board.
  */
+import archipelago from "../maps/archipelago.json";
 import continental from "../maps/continental.json";
 import frontier from "../maps/frontier.json";
+import meridian from "../maps/meridian.json";
+import nordic from "../maps/nordic.json";
 import subcontinent from "../maps/subcontinent.json";
 
 export const CARD_COLOURS = [
@@ -80,7 +83,12 @@ export interface BoxcarMap {
 export const MAPS: Record<string, BoxcarMap> = {
   continental: continental as BoxcarMap,
   frontier: frontier as BoxcarMap,
-  subcontinent: subcontinent as BoxcarMap
+  subcontinent: subcontinent as BoxcarMap,
+  // Meridian is the big one: Continental runs out of track before a
+  // five-player game finds its ending, and 91 routes is what fixes that.
+  meridian: meridian as BoxcarMap,
+  archipelago: archipelago as BoxcarMap,
+  nordic: nordic as BoxcarMap
 };
 
 export const MAP_IDS = Object.keys(MAPS);

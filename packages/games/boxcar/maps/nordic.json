@@ -1,0 +1,1091 @@
+{
+  "id": "nordic",
+  "name": "Nordic",
+  "tagline": "The North · 30 cities · long winters, longer routes",
+  "stations": true,
+  "cities": [
+    {
+      "key": "tromso",
+      "name": "Tromsø",
+      "x": 520,
+      "y": 60
+    },
+    {
+      "key": "rovaniemi",
+      "name": "Rovaniemi",
+      "x": 610,
+      "y": 95
+    },
+    {
+      "key": "lulea",
+      "name": "Luleå",
+      "x": 555,
+      "y": 140
+    },
+    {
+      "key": "oulu",
+      "name": "Oulu",
+      "x": 620,
+      "y": 160
+    },
+    {
+      "key": "umea",
+      "name": "Umeå",
+      "x": 530,
+      "y": 195
+    },
+    {
+      "key": "trondheim",
+      "name": "Trondheim",
+      "x": 415,
+      "y": 175
+    },
+    {
+      "key": "sundsvall",
+      "name": "Sundsvall",
+      "x": 505,
+      "y": 250
+    },
+    {
+      "key": "kuopio",
+      "name": "Kuopio",
+      "x": 640,
+      "y": 230
+    },
+    {
+      "key": "tampere",
+      "name": "Tampere",
+      "x": 610,
+      "y": 285
+    },
+    {
+      "key": "turku",
+      "name": "Turku",
+      "x": 578,
+      "y": 320
+    },
+    {
+      "key": "helsinki",
+      "name": "Helsinki",
+      "x": 630,
+      "y": 325
+    },
+    {
+      "key": "bergen",
+      "name": "Bergen",
+      "x": 350,
+      "y": 275
+    },
+    {
+      "key": "lillehammer",
+      "name": "Lillehammer",
+      "x": 425,
+      "y": 265
+    },
+    {
+      "key": "oslo",
+      "name": "Oslo",
+      "x": 425,
+      "y": 320
+    },
+    {
+      "key": "karlstad",
+      "name": "Karlstad",
+      "x": 470,
+      "y": 330
+    },
+    {
+      "key": "uppsala",
+      "name": "Uppsala",
+      "x": 528,
+      "y": 305
+    },
+    {
+      "key": "stockholm",
+      "name": "Stockholm",
+      "x": 535,
+      "y": 340
+    },
+    {
+      "key": "stavanger",
+      "name": "Stavanger",
+      "x": 348,
+      "y": 335
+    },
+    {
+      "key": "kristiansand",
+      "name": "Kristiansand",
+      "x": 390,
+      "y": 375
+    },
+    {
+      "key": "orebro",
+      "name": "Örebro",
+      "x": 490,
+      "y": 370
+    },
+    {
+      "key": "gothenburg",
+      "name": "Gothenburg",
+      "x": 430,
+      "y": 415
+    },
+    {
+      "key": "linkoping",
+      "name": "Linköping",
+      "x": 505,
+      "y": 405
+    },
+    {
+      "key": "visby",
+      "name": "Visby",
+      "x": 560,
+      "y": 400
+    },
+    {
+      "key": "kalmar",
+      "name": "Kalmar",
+      "x": 520,
+      "y": 450
+    },
+    {
+      "key": "aalborg",
+      "name": "Aalborg",
+      "x": 400,
+      "y": 460
+    },
+    {
+      "key": "malmo",
+      "name": "Malmö",
+      "x": 460,
+      "y": 490
+    },
+    {
+      "key": "copenhagen",
+      "name": "Copenhagen",
+      "x": 425,
+      "y": 505
+    },
+    {
+      "key": "kiel",
+      "name": "Kiel",
+      "x": 415,
+      "y": 560
+    },
+    {
+      "key": "gdansk",
+      "name": "Gdańsk",
+      "x": 545,
+      "y": 545
+    },
+    {
+      "key": "riga",
+      "name": "Riga",
+      "x": 630,
+      "y": 435
+    },
+    {
+      "key": "tallinn",
+      "name": "Tallinn",
+      "x": 638,
+      "y": 375
+    }
+  ],
+  "routes": [
+    {
+      "id": 0,
+      "a": "uppsala",
+      "b": "stockholm",
+      "len": 1,
+      "color": "orange",
+      "tunnel": false,
+      "ferry": 0
+    },
+    {
+      "id": 1,
+      "a": "orebro",
+      "b": "linkoping",
+      "len": 1,
+      "color": "yellow",
+      "tunnel": false,
+      "ferry": 0
+    },
+    {
+      "id": 2,
+      "a": "malmo",
+      "b": "copenhagen",
+      "len": 1,
+      "color": "blue",
+      "tunnel": false,
+      "ferry": 1
+    },
+    {
+      "id": 3,
+      "a": "tampere",
+      "b": "helsinki",
+      "len": 1,
+      "color": "gray",
+      "tunnel": false,
+      "ferry": 0
+    },
+    {
+      "id": 4,
+      "a": "karlstad",
+      "b": "orebro",
+      "len": 1,
+      "color": "purple",
+      "tunnel": false,
+      "ferry": 0,
+      "twin": 5
+    },
+    {
+      "id": 5,
+      "a": "karlstad",
+      "b": "orebro",
+      "len": 1,
+      "color": "green",
+      "tunnel": false,
+      "ferry": 0,
+      "twin": 4
+    },
+    {
+      "id": 6,
+      "a": "oslo",
+      "b": "karlstad",
+      "len": 1,
+      "color": "red",
+      "tunnel": false,
+      "ferry": 0
+    },
+    {
+      "id": 7,
+      "a": "tampere",
+      "b": "turku",
+      "len": 1,
+      "color": "white",
+      "tunnel": false,
+      "ferry": 0
+    },
+    {
+      "id": 8,
+      "a": "turku",
+      "b": "stockholm",
+      "len": 1,
+      "color": "black",
+      "tunnel": false,
+      "ferry": 1
+    },
+    {
+      "id": 9,
+      "a": "linkoping",
+      "b": "kalmar",
+      "len": 1,
+      "color": "orange",
+      "tunnel": false,
+      "ferry": 0
+    },
+    {
+      "id": 10,
+      "a": "helsinki",
+      "b": "tallinn",
+      "len": 1,
+      "color": "gray",
+      "tunnel": false,
+      "ferry": 1
+    },
+    {
+      "id": 11,
+      "a": "aalborg",
+      "b": "copenhagen",
+      "len": 2,
+      "color": "blue",
+      "tunnel": false,
+      "ferry": 0
+    },
+    {
+      "id": 12,
+      "a": "turku",
+      "b": "uppsala",
+      "len": 2,
+      "color": "white",
+      "tunnel": false,
+      "ferry": 0
+    },
+    {
+      "id": 13,
+      "a": "turku",
+      "b": "helsinki",
+      "len": 2,
+      "color": "yellow",
+      "tunnel": false,
+      "ferry": 0,
+      "twin": 14
+    },
+    {
+      "id": 14,
+      "a": "turku",
+      "b": "helsinki",
+      "len": 2,
+      "color": "black",
+      "tunnel": false,
+      "ferry": 0,
+      "twin": 13
+    },
+    {
+      "id": 15,
+      "a": "stockholm",
+      "b": "orebro",
+      "len": 2,
+      "color": "red",
+      "tunnel": false,
+      "ferry": 0,
+      "twin": 16
+    },
+    {
+      "id": 16,
+      "a": "stockholm",
+      "b": "orebro",
+      "len": 2,
+      "color": "red",
+      "tunnel": false,
+      "ferry": 0,
+      "twin": 15
+    },
+    {
+      "id": 17,
+      "a": "gothenburg",
+      "b": "aalborg",
+      "len": 2,
+      "color": "green",
+      "tunnel": false,
+      "ferry": 1
+    },
+    {
+      "id": 18,
+      "a": "lillehammer",
+      "b": "oslo",
+      "len": 2,
+      "color": "purple",
+      "tunnel": false,
+      "ferry": 0
+    },
+    {
+      "id": 19,
+      "a": "linkoping",
+      "b": "visby",
+      "len": 2,
+      "color": "purple",
+      "tunnel": false,
+      "ferry": 0
+    },
+    {
+      "id": 20,
+      "a": "copenhagen",
+      "b": "kiel",
+      "len": 2,
+      "color": "gray",
+      "tunnel": false,
+      "ferry": 0
+    },
+    {
+      "id": 21,
+      "a": "kristiansand",
+      "b": "gothenburg",
+      "len": 2,
+      "color": "yellow",
+      "tunnel": false,
+      "ferry": 0
+    },
+    {
+      "id": 22,
+      "a": "stavanger",
+      "b": "kristiansand",
+      "len": 2,
+      "color": "gray",
+      "tunnel": false,
+      "ferry": 0
+    },
+    {
+      "id": 23,
+      "a": "sundsvall",
+      "b": "uppsala",
+      "len": 2,
+      "color": "black",
+      "tunnel": false,
+      "ferry": 0
+    },
+    {
+      "id": 24,
+      "a": "bergen",
+      "b": "stavanger",
+      "len": 2,
+      "color": "white",
+      "tunnel": false,
+      "ferry": 0
+    },
+    {
+      "id": 25,
+      "a": "lulea",
+      "b": "umea",
+      "len": 2,
+      "color": "gray",
+      "tunnel": false,
+      "ferry": 0
+    },
+    {
+      "id": 26,
+      "a": "umea",
+      "b": "sundsvall",
+      "len": 2,
+      "color": "green",
+      "tunnel": false,
+      "ferry": 0
+    },
+    {
+      "id": 27,
+      "a": "riga",
+      "b": "tallinn",
+      "len": 2,
+      "color": "blue",
+      "tunnel": false,
+      "ferry": 0
+    },
+    {
+      "id": 28,
+      "a": "kuopio",
+      "b": "tampere",
+      "len": 2,
+      "color": "orange",
+      "tunnel": false,
+      "ferry": 0
+    },
+    {
+      "id": 29,
+      "a": "karlstad",
+      "b": "uppsala",
+      "len": 2,
+      "color": "gray",
+      "tunnel": false,
+      "ferry": 0
+    },
+    {
+      "id": 30,
+      "a": "visby",
+      "b": "kalmar",
+      "len": 2,
+      "color": "orange",
+      "tunnel": false,
+      "ferry": 0
+    },
+    {
+      "id": 31,
+      "a": "stockholm",
+      "b": "visby",
+      "len": 2,
+      "color": "gray",
+      "tunnel": false,
+      "ferry": 0
+    },
+    {
+      "id": 32,
+      "a": "oslo",
+      "b": "kristiansand",
+      "len": 2,
+      "color": "red",
+      "tunnel": false,
+      "ferry": 0
+    },
+    {
+      "id": 33,
+      "a": "rovaniemi",
+      "b": "oulu",
+      "len": 2,
+      "color": "green",
+      "tunnel": false,
+      "ferry": 0,
+      "twin": 34
+    },
+    {
+      "id": 34,
+      "a": "rovaniemi",
+      "b": "oulu",
+      "len": 2,
+      "color": "orange",
+      "tunnel": false,
+      "ferry": 0,
+      "twin": 33
+    },
+    {
+      "id": 35,
+      "a": "karlstad",
+      "b": "stockholm",
+      "len": 2,
+      "color": "blue",
+      "tunnel": false,
+      "ferry": 0
+    },
+    {
+      "id": 36,
+      "a": "aalborg",
+      "b": "malmo",
+      "len": 2,
+      "color": "gray",
+      "tunnel": false,
+      "ferry": 0
+    },
+    {
+      "id": 37,
+      "a": "lulea",
+      "b": "oulu",
+      "len": 2,
+      "color": "black",
+      "tunnel": false,
+      "ferry": 0
+    },
+    {
+      "id": 38,
+      "a": "rovaniemi",
+      "b": "lulea",
+      "len": 2,
+      "color": "white",
+      "tunnel": false,
+      "ferry": 0
+    },
+    {
+      "id": 39,
+      "a": "kalmar",
+      "b": "malmo",
+      "len": 2,
+      "color": "purple",
+      "tunnel": false,
+      "ferry": 0
+    },
+    {
+      "id": 40,
+      "a": "oulu",
+      "b": "kuopio",
+      "len": 2,
+      "color": "yellow",
+      "tunnel": false,
+      "ferry": 0
+    },
+    {
+      "id": 41,
+      "a": "orebro",
+      "b": "gothenburg",
+      "len": 2,
+      "color": "gray",
+      "tunnel": false,
+      "ferry": 0,
+      "twin": 42
+    },
+    {
+      "id": 42,
+      "a": "orebro",
+      "b": "gothenburg",
+      "len": 2,
+      "color": "gray",
+      "tunnel": false,
+      "ferry": 0,
+      "twin": 41
+    },
+    {
+      "id": 43,
+      "a": "bergen",
+      "b": "lillehammer",
+      "len": 2,
+      "color": "black",
+      "tunnel": true,
+      "ferry": 0
+    },
+    {
+      "id": 44,
+      "a": "gothenburg",
+      "b": "linkoping",
+      "len": 2,
+      "color": "gray",
+      "tunnel": false,
+      "ferry": 0
+    },
+    {
+      "id": 45,
+      "a": "orebro",
+      "b": "visby",
+      "len": 2,
+      "color": "gray",
+      "tunnel": false,
+      "ferry": 0
+    },
+    {
+      "id": 46,
+      "a": "visby",
+      "b": "riga",
+      "len": 2,
+      "color": "purple",
+      "tunnel": false,
+      "ferry": 0
+    },
+    {
+      "id": 47,
+      "a": "oslo",
+      "b": "stavanger",
+      "len": 2,
+      "color": "gray",
+      "tunnel": false,
+      "ferry": 0
+    },
+    {
+      "id": 48,
+      "a": "lillehammer",
+      "b": "karlstad",
+      "len": 2,
+      "color": "blue",
+      "tunnel": true,
+      "ferry": 0
+    },
+    {
+      "id": 49,
+      "a": "gothenburg",
+      "b": "malmo",
+      "len": 2,
+      "color": "yellow",
+      "tunnel": false,
+      "ferry": 0,
+      "twin": 50
+    },
+    {
+      "id": 50,
+      "a": "gothenburg",
+      "b": "malmo",
+      "len": 2,
+      "color": "green",
+      "tunnel": false,
+      "ferry": 0,
+      "twin": 49
+    },
+    {
+      "id": 51,
+      "a": "sundsvall",
+      "b": "lillehammer",
+      "len": 2,
+      "color": "red",
+      "tunnel": false,
+      "ferry": 0
+    },
+    {
+      "id": 52,
+      "a": "turku",
+      "b": "tallinn",
+      "len": 2,
+      "color": "white",
+      "tunnel": false,
+      "ferry": 0
+    },
+    {
+      "id": 53,
+      "a": "malmo",
+      "b": "kiel",
+      "len": 2,
+      "color": "black",
+      "tunnel": false,
+      "ferry": 0
+    },
+    {
+      "id": 54,
+      "a": "tampere",
+      "b": "uppsala",
+      "len": 2,
+      "color": "yellow",
+      "tunnel": false,
+      "ferry": 0
+    },
+    {
+      "id": 55,
+      "a": "kristiansand",
+      "b": "aalborg",
+      "len": 3,
+      "color": "orange",
+      "tunnel": false,
+      "ferry": 0
+    },
+    {
+      "id": 56,
+      "a": "tromso",
+      "b": "lulea",
+      "len": 3,
+      "color": "gray",
+      "tunnel": true,
+      "ferry": 0
+    },
+    {
+      "id": 57,
+      "a": "bergen",
+      "b": "oslo",
+      "len": 3,
+      "color": "green",
+      "tunnel": false,
+      "ferry": 0,
+      "twin": 58
+    },
+    {
+      "id": 58,
+      "a": "bergen",
+      "b": "oslo",
+      "len": 3,
+      "color": "purple",
+      "tunnel": false,
+      "ferry": 0,
+      "twin": 57
+    },
+    {
+      "id": 59,
+      "a": "trondheim",
+      "b": "lillehammer",
+      "len": 3,
+      "color": "gray",
+      "tunnel": false,
+      "ferry": 0
+    },
+    {
+      "id": 60,
+      "a": "kuopio",
+      "b": "helsinki",
+      "len": 3,
+      "color": "white",
+      "tunnel": false,
+      "ferry": 0,
+      "twin": 61
+    },
+    {
+      "id": 61,
+      "a": "kuopio",
+      "b": "helsinki",
+      "len": 3,
+      "color": "red",
+      "tunnel": false,
+      "ferry": 0,
+      "twin": 60
+    },
+    {
+      "id": 62,
+      "a": "tromso",
+      "b": "rovaniemi",
+      "len": 3,
+      "color": "gray",
+      "tunnel": false,
+      "ferry": 0,
+      "twin": 63
+    },
+    {
+      "id": 63,
+      "a": "tromso",
+      "b": "rovaniemi",
+      "len": 3,
+      "color": "gray",
+      "tunnel": false,
+      "ferry": 0,
+      "twin": 62
+    },
+    {
+      "id": 64,
+      "a": "oulu",
+      "b": "umea",
+      "len": 3,
+      "color": "blue",
+      "tunnel": false,
+      "ferry": 0
+    },
+    {
+      "id": 65,
+      "a": "kalmar",
+      "b": "gdansk",
+      "len": 3,
+      "color": "yellow",
+      "tunnel": false,
+      "ferry": 0
+    },
+    {
+      "id": 66,
+      "a": "aalborg",
+      "b": "kiel",
+      "len": 3,
+      "color": "gray",
+      "tunnel": false,
+      "ferry": 0
+    },
+    {
+      "id": 67,
+      "a": "sundsvall",
+      "b": "tampere",
+      "len": 3,
+      "color": "green",
+      "tunnel": false,
+      "ferry": 0
+    },
+    {
+      "id": 68,
+      "a": "kalmar",
+      "b": "riga",
+      "len": 3,
+      "color": "gray",
+      "tunnel": false,
+      "ferry": 0
+    },
+    {
+      "id": 69,
+      "a": "umea",
+      "b": "kuopio",
+      "len": 3,
+      "color": "orange",
+      "tunnel": false,
+      "ferry": 0
+    },
+    {
+      "id": 70,
+      "a": "umea",
+      "b": "trondheim",
+      "len": 3,
+      "color": "gray",
+      "tunnel": false,
+      "ferry": 0
+    },
+    {
+      "id": 71,
+      "a": "trondheim",
+      "b": "sundsvall",
+      "len": 3,
+      "color": "purple",
+      "tunnel": false,
+      "ferry": 0
+    },
+    {
+      "id": 72,
+      "a": "trondheim",
+      "b": "bergen",
+      "len": 4,
+      "color": "white",
+      "tunnel": false,
+      "ferry": 0
+    },
+    {
+      "id": 73,
+      "a": "kiel",
+      "b": "gdansk",
+      "len": 4,
+      "color": "black",
+      "tunnel": false,
+      "ferry": 2
+    },
+    {
+      "id": 74,
+      "a": "rovaniemi",
+      "b": "kuopio",
+      "len": 4,
+      "color": "red",
+      "tunnel": false,
+      "ferry": 0
+    },
+    {
+      "id": 75,
+      "a": "gdansk",
+      "b": "riga",
+      "len": 4,
+      "color": "blue",
+      "tunnel": false,
+      "ferry": 0
+    },
+    {
+      "id": 76,
+      "a": "lulea",
+      "b": "trondheim",
+      "len": 4,
+      "color": "red",
+      "tunnel": false,
+      "ferry": 0
+    }
+  ],
+  "tickets": [
+    {
+      "id": 0,
+      "a": "tromso",
+      "b": "kiel",
+      "points": 18,
+      "long": true
+    },
+    {
+      "id": 1,
+      "a": "tromso",
+      "b": "copenhagen",
+      "points": 17,
+      "long": true
+    },
+    {
+      "id": 2,
+      "a": "tromso",
+      "b": "gdansk",
+      "points": 17,
+      "long": true
+    },
+    {
+      "id": 3,
+      "a": "tromso",
+      "b": "aalborg",
+      "points": 16,
+      "long": true
+    },
+    {
+      "id": 4,
+      "a": "tromso",
+      "b": "malmo",
+      "points": 16,
+      "long": true
+    },
+    {
+      "id": 5,
+      "a": "rovaniemi",
+      "b": "kiel",
+      "points": 16,
+      "long": true
+    },
+    {
+      "id": 6,
+      "a": "tallinn",
+      "b": "malmo",
+      "points": 7,
+      "long": false
+    },
+    {
+      "id": 7,
+      "a": "kuopio",
+      "b": "copenhagen",
+      "points": 11,
+      "long": false
+    },
+    {
+      "id": 8,
+      "a": "kuopio",
+      "b": "malmo",
+      "points": 10,
+      "long": false
+    },
+    {
+      "id": 9,
+      "a": "linkoping",
+      "b": "tallinn",
+      "points": 6,
+      "long": false
+    },
+    {
+      "id": 10,
+      "a": "aalborg",
+      "b": "lillehammer",
+      "points": 7,
+      "long": false
+    },
+    {
+      "id": 11,
+      "a": "riga",
+      "b": "lulea",
+      "points": 10,
+      "long": false
+    },
+    {
+      "id": 12,
+      "a": "kalmar",
+      "b": "bergen",
+      "points": 7,
+      "long": false
+    },
+    {
+      "id": 13,
+      "a": "malmo",
+      "b": "turku",
+      "points": 7,
+      "long": false
+    },
+    {
+      "id": 14,
+      "a": "stockholm",
+      "b": "copenhagen",
+      "points": 7,
+      "long": false
+    },
+    {
+      "id": 15,
+      "a": "kuopio",
+      "b": "karlstad",
+      "points": 6,
+      "long": false
+    },
+    {
+      "id": 16,
+      "a": "lulea",
+      "b": "tampere",
+      "points": 6,
+      "long": false
+    },
+    {
+      "id": 17,
+      "a": "uppsala",
+      "b": "bergen",
+      "points": 6,
+      "long": false
+    },
+    {
+      "id": 18,
+      "a": "kuopio",
+      "b": "oslo",
+      "points": 7,
+      "long": false
+    },
+    {
+      "id": 19,
+      "a": "lulea",
+      "b": "uppsala",
+      "points": 6,
+      "long": false
+    },
+    {
+      "id": 20,
+      "a": "turku",
+      "b": "aalborg",
+      "points": 7,
+      "long": false
+    },
+    {
+      "id": 21,
+      "a": "copenhagen",
+      "b": "sundsvall",
+      "points": 10,
+      "long": false
+    },
+    {
+      "id": 22,
+      "a": "kiel",
+      "b": "kristiansand",
+      "points": 6,
+      "long": false
+    },
+    {
+      "id": 23,
+      "a": "oulu",
+      "b": "gothenburg",
+      "points": 10,
+      "long": false
+    },
+    {
+      "id": 24,
+      "a": "copenhagen",
+      "b": "oulu",
+      "points": 13,
+      "long": false
+    },
+    {
+      "id": 25,
+      "a": "umea",
+      "b": "riga",
+      "points": 9,
+      "long": false
+    }
+  ]
+}
