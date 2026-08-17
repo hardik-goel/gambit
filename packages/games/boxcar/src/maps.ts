@@ -143,6 +143,51 @@ export function citiesConnected(map: BoxcarMap, routeIds: number[], from: string
 }
 
 /** Shortest route length between two cities over the whole map. */
+/**
+ * The cheapest run between two cities, as the cities along it.
+ *
+ * A ticket names two places on a board of thirty-odd, and reading it means
+ * finding both and then working out whether they are anywhere near each other.
+ * This is what lets the map answer that question instead of the player.
+ *
+ * It ignores who owns what: it is the shape of the problem, not a route plan.
+ */
+export function shortestPathCities(map: BoxcarMap, from: string, to: string): string[] {
+  const dist = new Map<string, number>([[from, 0]]);
+  const cameFrom = new Map<string, string>();
+  const queue: [string, number][] = [[from, 0]];
+  const edges = new Map<string, Route[]>();
+  for (const r of map.routes) {
+    edges.set(r.a, [...(edges.get(r.a) ?? []), r]);
+    edges.set(r.b, [...(edges.get(r.b) ?? []), r]);
+  }
+  while (queue.length) {
+    queue.sort((x, y) => x[1] - y[1]);
+    const [city, d] = queue.shift()!;
+    if (city === to) break;
+    if (d > (dist.get(city) ?? Infinity)) continue;
+    for (const r of edges.get(city) ?? []) {
+      const next = r.a === city ? r.b : r.a;
+      const nd = d + r.len;
+      if (nd < (dist.get(next) ?? Infinity)) {
+        dist.set(next, nd);
+        cameFrom.set(next, city);
+        queue.push([next, nd]);
+      }
+    }
+  }
+  if (!dist.has(to)) return [];
+  const path = [to];
+  let here = to;
+  while (here !== from) {
+    const previous = cameFrom.get(here);
+    if (!previous) return [];
+    path.unshift(previous);
+    here = previous;
+  }
+  return path;
+}
+
 export function shortestPath(map: BoxcarMap, from: string, to: string): number {
   const dist = new Map<string, number>([[from, 0]]);
   const queue: [string, number][] = [[from, 0]];

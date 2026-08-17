@@ -26,7 +26,11 @@ export interface AudioSettings {
 export const DEFAULT_AUDIO: AudioSettings = {
   ui: true,
   foley: true,
-  music: false,
+  // On by default: opening Gambit should sound like walking into the room, not
+  // like a page. It waits for the first gesture because browsers require one,
+  // stops with a single press in the header, and a player who turns it off has
+  // that remembered.
+  music: true,
   uiVolume: 0.7,
   foleyVolume: 0.8,
   musicVolume: 0.45

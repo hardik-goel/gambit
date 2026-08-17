@@ -7,7 +7,7 @@
 import { motion } from "framer-motion";
 import React, { useMemo, useState } from "react";
 import type { BoardProps } from "@gambit/sdk";
-import { COLOUR_HEX, MAPS, routePoints, type Card } from "./maps";
+import { COLOUR_HEX, MAPS, routePoints, type Card, shortestPathCities } from "./maps";
 import type { BoxcarMove, BoxcarView, Hand } from "./state";
 
 const SEAT_HEX = ["#b0342a", "#2f5f9e", "#3d7a45", "#c9a227", "#2e2a26"];
@@ -46,6 +46,24 @@ export function Board({ view, legal, seat, play, sfx }: BoardProps<BoxcarView, B
   }, [map]);
 
   const cityAt = (key: string) => map.cities.find((c) => c.key === key)!;
+
+  /**
+   * The ticket the player is looking at, drawn onto the map.
+   *
+   * A ticket is two city names on a board of thirty-five. Reading one meant
+   * hunting for both and then guessing whether they were near each other;
+   * pressing it now lights the two cities and traces the shortest way between
+   * them, so the question the ticket asks is answered by the board.
+   */
+  const [lit, setLit] = useState<number | null>(null);
+  const litTicket =
+    lit === null ? null : [...view.offered, ...view.tickets].find((t) => t.id === lit) ?? null;
+  const litPath = litTicket ? shortestPathCities(map, litTicket.a, litTicket.b) : [];
+  const litCities = new Set(litPath);
+  const litLegs = new Set<string>();
+  for (let i = 0; i + 1 < litPath.length; i++) {
+    litLegs.add([litPath[i]!, litPath[i + 1]!].sort().join("|"));
+  }
   const stationOwner = (key: string) =>
     Object.entries(view.stationCities).find(([, cities]) => cities.includes(key))?.[0];
 
@@ -90,7 +108,12 @@ export function Board({ view, legal, seat, play, sfx }: BoardProps<BoxcarView, B
                       borderColor: on ? "var(--accent)" : "var(--line)",
                       color: on ? "var(--accent)" : "var(--ink)"
                     }}
-                    onClick={() => setKeep(on ? keep.filter((k) => k !== t.id) : [...keep, t.id])}
+                    onMouseEnter={() => setLit(t.id)}
+                    onFocus={() => setLit(t.id)}
+                    onClick={() => {
+                      setLit(t.id);
+                      setKeep(on ? keep.filter((k) => k !== t.id) : [...keep, t.id]);
+                    }}
                   >
                     {cityAt(t.a).name} → {cityAt(t.b).name} · {t.points}
                     {t.long ? " · long" : ""}
@@ -190,23 +213,63 @@ export function Board({ view, legal, seat, play, sfx }: BoardProps<BoxcarView, B
           );
         })}
 
+        {/* The ticket's shortest run, under the tracks so it never hides one. */}
+        {litPath.map((key, i) => {
+          if (i + 1 >= litPath.length) return null;
+          const a = cityAt(key);
+          const b = cityAt(litPath[i + 1]!);
+          return (
+            <line
+              key={`lit-${key}`}
+              x1={a.x}
+              y1={a.y}
+              x2={b.x}
+              y2={b.y}
+              stroke="var(--accent)"
+              strokeWidth={11}
+              strokeLinecap="round"
+              opacity={0.25}
+              style={{ pointerEvents: "none" }}
+            />
+          );
+        })}
+
+        {litTicket && [litTicket.a, litTicket.b].map((key) => {
+          const city = cityAt(key);
+          return (
+            <circle
+              key={`end-${key}`}
+              cx={city.x}
+              cy={city.y}
+              r={13}
+              fill="none"
+              stroke="var(--accent)"
+              strokeWidth={2.5}
+              opacity={0.9}
+              style={{ pointerEvents: "none" }}
+            />
+          );
+        })}
+
         {map.cities.map((city) => {
           const owner = stationOwner(city.key);
+          const onRoute = litCities.has(city.key);
           return (
             <g key={city.key}>
               <circle
                 cx={city.x}
                 cy={city.y}
-                r={6}
+                r={onRoute ? 7.5 : 6}
                 fill={owner ? SEAT_HEX[Number(owner) % SEAT_HEX.length] : "var(--panel)"}
-                stroke="var(--ink)"
-                strokeWidth={1.5}
+                stroke={onRoute ? "var(--accent)" : "var(--ink)"}
+                strokeWidth={onRoute ? 2.5 : 1.5}
               />
               <text
                 x={city.x}
                 y={city.y - 10}
-                fontSize={11}
-                fill="var(--ink)"
+                fontSize={litTicket && onRoute ? 12.5 : 11}
+                fontWeight={litTicket && onRoute ? 700 : 400}
+                fill={onRoute ? "var(--accent)" : "var(--ink)"}
                 textAnchor="middle"
                 style={{ pointerEvents: "none" }}
               >
@@ -306,16 +369,28 @@ export function Board({ view, legal, seat, play, sfx }: BoardProps<BoxcarView, B
         {showTickets && (
           <div style={{ display: "grid", gap: 4, marginTop: 8 }}>
             {view.tickets.map((t) => (
-              <div
+              <button
                 key={t.id}
+                aria-pressed={lit === t.id}
+                title="Show this on the map"
+                onMouseEnter={() => setLit(t.id)}
+                onFocus={() => setLit(t.id)}
+                onClick={() => setLit(lit === t.id ? null : t.id)}
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
                   padding: "6px 10px",
                   borderRadius: 6,
-                  background: "var(--panel2)",
-                  border: `1px solid ${t.done ? "#5aa85f" : "var(--line)"}`,
-                  fontSize: 13
+                  background: lit === t.id ? "var(--panel)" : "var(--panel2)",
+                  border: `1px solid ${
+                    lit === t.id ? "var(--accent)" : t.done ? "#5aa85f" : "var(--line)"
+                  }`,
+                  fontSize: 13,
+                  cursor: "pointer",
+                  color: "inherit",
+                  font: "inherit",
+                  width: "100%",
+                  textAlign: "left"
                 }}
               >
                 <span>
@@ -326,7 +401,7 @@ export function Board({ view, legal, seat, play, sfx }: BoardProps<BoxcarView, B
                   {t.done ? "✓ " : ""}
                   {t.points}
                 </span>
-              </div>
+              </button>
             ))}
           </div>
         )}

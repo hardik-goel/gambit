@@ -200,6 +200,26 @@ function Table({
     track({ name: "move_latency", gameId: snapshot.gameId, ms: state.pingMs });
   }, [state.pingMs, snapshot.gameId]);
 
+  const [copied, setCopied] = useState(false);
+  const [myName, setMyName] = useState(
+    room.players.find((p) => p.playerId === snapshot.me.playerId)?.name ?? snapshot.me.name
+  );
+
+  /** Save the name, and let the table see it — quietly, on blur. */
+  const renameMe = useCallback(async () => {
+    const clean = myName.trim().slice(0, 24);
+    if (!clean || clean === room.players.find((p) => p.playerId === snapshot.me.playerId)?.name) return;
+    await fetch("/api/social", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ action: "profile", name: clean })
+    }).catch(() => undefined);
+    // Re-joining is what publishes the new name: the join path reads it from
+    // the profile and broadcasts the room, so everybody at the table sees the
+    // change without a bespoke action for it.
+    await fetch(`/api/rooms/${snapshot.room.id}`).catch(() => undefined);
+  }, [myName, room.players, snapshot.me.playerId, snapshot.room.id]);
+
   /** How many chairs are still empty — nothing may be added past zero. */
   const seatsLeft = Math.max(0, def.meta.maxPlayers - room.players.filter((p) => p.seat !== null).length);
 
@@ -290,11 +310,41 @@ function Table({
                     }}
                   >
                     <span style={{ color: "var(--mut)", fontSize: 12, width: 46 }}>SEAT {i + 1}</span>
-                    <span style={{ flex: 1 }}>
-                      {holder ? holder.name : <span style={{ color: "var(--mut)" }}>empty</span>}
-                      {holder?.isBot && <span style={{ color: "var(--mut)" }}> · bot</span>}
-                      {holder?.ready && !holder.isBot && <span style={{ color: "var(--accent)" }}> · ready</span>}
-                    </span>
+                    {mine ? (
+                      // Your own name, changed where you are sitting. It was
+                      // only editable from the people panel, which is not where
+                      // anybody looks when they can see their name on a seat.
+                      <span style={{ flex: 1, display: "flex", alignItems: "center", gap: 8 }}>
+                        <input
+                          value={myName}
+                          onChange={(e) => setMyName(e.target.value.slice(0, 24))}
+                          onBlur={() => void renameMe()}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") (e.target as HTMLInputElement).blur();
+                          }}
+                          aria-label="Your name at this table"
+                          maxLength={24}
+                          style={{
+                            background: "transparent",
+                            border: "1px solid var(--line)",
+                            borderRadius: 8,
+                            color: "var(--ink)",
+                            font: "inherit",
+                            fontSize: 15,
+                            padding: "4px 8px",
+                            minWidth: 0,
+                            flex: "1 1 120px"
+                          }}
+                        />
+                        {holder?.ready && <span style={{ color: "var(--accent)" }}>ready</span>}
+                      </span>
+                    ) : (
+                      <span style={{ flex: 1 }}>
+                        {holder ? holder.name : <span style={{ color: "var(--mut)" }}>empty</span>}
+                        {holder?.isBot && <span style={{ color: "var(--mut)" }}> · bot</span>}
+                        {holder?.ready && !holder.isBot && <span style={{ color: "var(--accent)" }}> · ready</span>}
+                      </span>
+                    )}
                     {!holder && (
                       <button className="gambit-mini" onClick={() => void act({ action: "seat", seat: i })}>
                         Sit here
@@ -362,6 +412,23 @@ function Table({
                 ? "Not ready"
                 : "I'm ready"}
             </Button>
+            {/* How another person actually gets here. The lobby offered "sit
+                here" — which only ever seats you — and a QR button whose
+                purpose was not obvious, so a host with three empty chairs had
+                no visible way to fill them with people. */}
+            {seatsLeft > 0 && (
+              <Button
+                variant="ghost"
+                onClick={() => {
+                  const link = `${location.origin}/r/${code}`;
+                  void navigator.clipboard?.writeText(link).catch(() => undefined);
+                  setCopied(true);
+                  setTimeout(() => setCopied(false), 1800);
+                }}
+              >
+                {copied ? "Link copied" : `Invite people · ${seatsLeft} seat${seatsLeft === 1 ? "" : "s"} free`}
+              </Button>
+            )}
             {isHost && (
               <>
                 {/* Offered only while there is a seat to put one in. Both used
@@ -619,7 +686,27 @@ function Header({
           {code.slice(0, 3)}·{code.slice(3)}
         </div>
       </div>
-      <ConnectionDot status={state.status} pingMs={state.pingMs} />
+      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        <MusicToggle />
+        <ConnectionDot status={state.status} pingMs={state.pingMs} />
+      </div>
     </header>
+  );
+}
+
+/** One press to stop the music, from the table as well as the shelf. */
+function MusicToggle() {
+  const { settings, update } = useAudio();
+  return (
+    <button
+      className="gambit-mini"
+      aria-label={settings.music ? "Stop the music" : "Play music"}
+      aria-pressed={settings.music}
+      title={settings.music ? "Stop the music" : "Play music"}
+      onClick={() => update({ music: !settings.music })}
+      style={{ color: settings.music ? "var(--accent)" : "var(--mut)" }}
+    >
+      {settings.music ? "♪" : "♪̸"}
+    </button>
   );
 }

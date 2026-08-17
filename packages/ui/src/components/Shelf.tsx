@@ -406,12 +406,17 @@ function GameCard({
             <Button variant="ghost" cue="open" onClick={onPlayOnline}>
               Play online · invite friends
             </Button>
+            {/* "Quick match · 2 waiting" told you a number without telling you
+                what it was for. It is strangers, and they are waiting for
+                somebody to play with. */}
             {onQuickMatch && (
-              <Button variant="ghost" cue="open" onClick={onQuickMatch}>
-                Quick match
-                {waiting > 0 && (
-                  <span style={{ color: "var(--accent)" }}> · {waiting} waiting</span>
-                )}
+              <Button
+                variant="ghost"
+                cue="open"
+                title="Join a table with other people who are looking for a game"
+                onClick={onQuickMatch}
+              >
+                {waiting > 0 ? `Join ${waiting} looking for a game` : "Find me a game"}
               </Button>
             )}
             <Button variant="quiet" onClick={onTutorial}>

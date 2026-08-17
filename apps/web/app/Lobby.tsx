@@ -235,6 +235,19 @@ export function Lobby({
               ` ${(people.data?.requests.length ?? 0) + (people.data?.invites.length ?? 0)}`}
           </button>
           <ThemePicker />
+          {/* Music plays from the moment somebody opens Gambit, so stopping it
+              has to be one press from wherever they are — not three, inside a
+              panel they have to know exists. */}
+          <button
+            className="gambit-mini"
+            aria-label={settings.music ? "Stop the music" : "Play music"}
+            aria-pressed={settings.music}
+            title={settings.music ? "Stop the music" : "Play music"}
+            onClick={() => update({ music: !settings.music })}
+            style={{ color: settings.music ? "var(--accent)" : "var(--mut)" }}
+          >
+            {settings.music ? "♪" : "♪̸"}
+          </button>
           <button
             className="gambit-mini"
             aria-label="Sound settings"
