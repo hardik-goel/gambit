@@ -24,7 +24,8 @@
     "db:migrate": "tsx scripts/db-migrate.ts",
     "go-live": "tsx scripts/go-live.ts",
     "preflight": "tsx scripts/preflight.ts",
-    "sweep": "tsx scripts/sweep-screens.ts"
+    "sweep": "tsx scripts/sweep-screens.ts",
+    "two-player": "tsx scripts/two-player.ts"
   },
   "devDependencies": {
     "@types/node": "^22.10.5",

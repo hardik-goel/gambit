@@ -12,6 +12,7 @@ import {
   track,
   type Broadcaster,
   type EngineDeps,
+  type RoomStore,
   type ServerMessage
 } from "@gambit/core";
 import { CATALOG } from "@gambit/games";
@@ -55,7 +56,22 @@ if (!g.__gambit) {
  */
 export const usingSupabase = hasSupabase();
 
-export const store = g.__gambit.store;
+/**
+ * The store, and there is only one of it.
+ *
+ * This used to export the in-process store unconditionally while the engine was
+ * given the Supabase one, so half the platform wrote to Postgres and the other
+ * half read from a Map. On a single long-lived process the two were at least in
+ * the same building; on serverless the Map is per-invocation and always empty,
+ * so a room could be created and then never found again — every invite link,
+ * every scanned code and every open-lobby list came back "no table with that
+ * code", while the row sat in the database the whole time.
+ *
+ * Everything reads and writes through this. `deps.store` below is the same
+ * object, not a second one.
+ */
+export const store: RoomStore = usingSupabase ? new SupabaseRoomStore() : g.__gambit.store;
+
 const subscribers = g.__gambit.subs;
 
 export function subscribe(sub: Subscriber): () => void {
@@ -93,7 +109,7 @@ function safeSend(sub: Subscriber, msg: ServerMessage): void {
 }
 
 export const deps: EngineDeps = {
-  store: usingSupabase ? new SupabaseRoomStore() : store,
+  store,
   catalog: CATALOG,
   broadcast: usingSupabase ? supabaseBroadcaster() : broadcast,
   social: socialPort,
