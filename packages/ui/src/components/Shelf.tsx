@@ -17,6 +17,8 @@ export interface ShelfGame {
   tagline: string;
   /** What kind of game it is, in plain words. */
   kind: string;
+  /** The well-known game it will feel familiar to, and whose title that is. */
+  familiar?: { title: string; publisher?: string };
   blurb: string;
   players: string;
   minutes: number;
@@ -57,6 +59,7 @@ export function Shelf({
   onPlayOnline,
   onTutorial,
   onQuickMatch,
+  onPlayComputer,
   waiting = {}
 }: {
   games: ShelfGame[];
@@ -66,6 +69,8 @@ export function Shelf({
   onPlayOnline(id: string): void;
   onTutorial(id: string): void;
   onQuickMatch?(id: string): void;
+  /** Straight to a dealt table against bots — no lobby, no waiting. */
+  onPlayComputer(id: string): void;
   /** How many people are waiting for each game right now. */
   waiting?: Record<string, number>;
 }) {
@@ -164,6 +169,7 @@ export function Shelf({
             game={selected}
             onPlayHere={() => onPlayHere(selected.id)}
             onPlayOnline={() => onPlayOnline(selected.id)}
+            onPlayComputer={() => onPlayComputer(selected.id)}
             onTutorial={() => onTutorial(selected.id)}
             onQuickMatch={onQuickMatch ? () => onQuickMatch(selected.id) : undefined}
             waiting={waiting[selected.id] ?? 0}
@@ -286,11 +292,13 @@ function GameCard({
   onPlayOnline,
   onTutorial,
   onQuickMatch,
+  onPlayComputer,
   waiting
 }: {
   game: ShelfGame;
   onPlayHere(): void;
   onPlayOnline(): void;
+  onPlayComputer(): void;
   onTutorial(): void;
   onQuickMatch?(): void;
   waiting: number;
@@ -324,16 +332,32 @@ function GameCard({
             position: "relative"
           }}
         >
-          <div
-            style={{
-              fontSize: 27,
-              letterSpacing: 4,
-              fontWeight: 700,
-              color: "#f6efe2",
-              textShadow: "0 2px 8px rgba(0,0,0,.45)"
-            }}
-          >
-            {game.name.toUpperCase()}
+          <div style={{ display: "grid", gap: 8, justifyItems: "center", padding: "0 14px" }}>
+            <div
+              style={{
+                fontSize: 27,
+                letterSpacing: 4,
+                fontWeight: 700,
+                color: "#f6efe2",
+                textShadow: "0 2px 8px rgba(0,0,0,.45)"
+              }}
+            >
+              {game.name.toUpperCase()}
+            </div>
+            {/* The name people already know, under the name we gave it. */}
+            {game.familiar && (
+              <div
+                style={{
+                  fontSize: 12.5,
+                  letterSpacing: "0.04em",
+                  color: "#f6efe2",
+                  opacity: 0.82,
+                  textShadow: "0 1px 6px rgba(0,0,0,.5)"
+                }}
+              >
+                our take on {game.familiar.title}
+              </div>
+            )}
           </div>
           <div
             style={{
@@ -375,6 +399,9 @@ function GameCard({
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
             <Button cue="open" onClick={onPlayHere}>
               Play here · same room
+            </Button>
+            <Button variant="ghost" cue="open" onClick={onPlayComputer}>
+              Play the computer
             </Button>
             <Button variant="ghost" cue="open" onClick={onPlayOnline}>
               Play online · invite friends

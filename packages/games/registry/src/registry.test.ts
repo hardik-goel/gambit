@@ -30,7 +30,13 @@ describe("the catalogue", () => {
     expect(SHELF_META).toEqual(shelfEntries());
   });
 
-  it("never uses a name we don't own", () => {
+  it("uses a name we don't own in one field, and nowhere else", () => {
+    // Another publisher's title is allowed in exactly one place — `familiar`,
+    // which exists to say "our take on Ticket to Ride" and is attributed
+    // wherever it is shown. It must not leak into a game's own name, its
+    // tagline, its kind, its blurb, its badges or its tutorial script, because
+    // those are the places where using somebody else's name stops being a
+    // description and starts being a claim. See LEGAL.md.
     const forbidden = [
       "ticket to ride",
       "catan",
@@ -46,10 +52,26 @@ describe("the catalogue", () => {
       "pandemic"
     ];
     const haystack = JSON.stringify(
-      Object.values(CATALOG).map((d) => ({ meta: d.meta, tutorial: d.Tutorial }))
+      Object.values(CATALOG).map((d) => {
+        const { familiar: _familiar, ...rest } = d.meta;
+        return { meta: rest, tutorial: d.Tutorial };
+      })
     ).toLowerCase();
     for (const name of forbidden) {
       expect(haystack.includes(name), `"${name}" appears in the catalogue copy`).toBe(false);
+    }
+
+    // And the one field that may carry a title carries its owner with it, so
+    // that anywhere it is rendered is able to attribute it.
+    for (const def of Object.values(CATALOG)) {
+      const familiar = def.meta.familiar;
+      if (!familiar) continue;
+      expect(familiar.title.length, `${def.meta.name} has an empty familiar title`).toBeGreaterThan(0);
+      const isPublicDomain = familiar.title.toLowerCase() === def.meta.name.toLowerCase();
+      expect(
+        isPublicDomain || Boolean(familiar.publisher),
+        `${def.meta.name} names "${familiar.title}" without saying whose it is`
+      ).toBe(true);
     }
   });
 });

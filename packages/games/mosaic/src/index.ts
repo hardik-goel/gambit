@@ -38,6 +38,7 @@ export const mosaic: GameDefinition<MosaicState, MosaicMove, MosaicView> = {
     name: "Mosaic",
     tagline: "Draft beauty, punish greed",
     kind: "Tile drafting · complete the pattern",
+    familiar: { title: "Azul", publisher: "Next Move Games" },
     blurb: "Take tiles from the factories, build a perfect wall, mind the floor line.",
     minPlayers: 2,
     maxPlayers: 4,

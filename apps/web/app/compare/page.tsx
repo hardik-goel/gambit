@@ -7,8 +7,11 @@ export const metadata = {
 };
 
 /**
- * The comparison page, and the only place in the product where another
- * publisher's name appears.
+ * The whole shelf, and what each game will feel familiar to.
+ *
+ * Each cover now says its own ("our take on Ticket to Ride"), so this is no
+ * longer the only place these titles appear — it is the page that gathers them
+ * and names the publisher of every one.
  *
  * This is nominative use: naming a product in order to describe a genuine
  * similarity to it. That is a narrow doorway, and it stays open only while
@@ -16,12 +19,13 @@ export const metadata = {
  * a footnote:
  *
  *   * the games here are our own — our rules text, our maps, our art;
- *   * the names belong to their publishers and are marked as theirs;
+ *   * the titles belong to their publishers and are marked as theirs;
  *   * nothing suggests any of them had a hand in this, endorsed it, or knows
  *     it exists.
  *
- * Everything else in the product — the shelf, the felts, the tutorials, the
- * code — carries none of these names. See LEGAL.md.
+ * The shelf carries the same attribution in its footer. What none of them
+ * carry is somebody else's title as part of a game's own name, its rules, or
+ * anything in the code — see the guard in registry.test.ts, and LEGAL.md.
  */
 
 interface Row {
@@ -75,7 +79,8 @@ export default function ComparePage() {
         you have played those, you will be at home here in about a minute.
       </p>
       <p style={{ color: "var(--mut)", fontSize: 15, margin: "0 0 30px", lineHeight: 1.65 }}>
-        So rather than be coy about it — here is the map.
+        Each game says so on its own cover. This is the whole shelf at once, with the publisher of
+        every title named.
       </p>
 
       <div style={{ overflowX: "auto" }}>

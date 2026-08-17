@@ -38,6 +38,7 @@ export const motive: GameDefinition<MotiveState, MotiveMove, MotiveView> = {
     name: "Motive",
     tagline: "Someone at this table did it",
     kind: "Deduction · work out who, where and how",
+    familiar: { title: "Cluedo / Clue", publisher: "Hasbro" },
     blurb: "Suggest, disprove, deduce. Accuse when certain — accuse wrong and you're out.",
     minPlayers: 3,
     maxPlayers: 6,

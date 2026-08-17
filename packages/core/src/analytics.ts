@@ -8,7 +8,7 @@
  */
 
 export type AnalyticsEvent =
-  | { name: "room_created"; gameId: string; mode: "here" | "online" | "quick" }
+  | { name: "room_created"; gameId: string; mode: "here" | "online" | "quick" | "computer" }
   | { name: "time_to_seated"; ms: number; players: number; mode: "here" | "online" | "quick" }
   | { name: "game_started"; gameId: string; players: number; bots: number }
   | { name: "game_finished"; gameId: string; players: number; minutes: number }

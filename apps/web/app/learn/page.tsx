@@ -68,6 +68,11 @@ export default function LearnIndex() {
                 />
                 <span style={{ fontSize: 17, letterSpacing: "0.02em" }}>{game.name}</span>
               </span>
+              {game.familiar && (
+                <span style={{ fontSize: 12.5, color: "var(--mut)" }}>
+                  our take on {game.familiar.title}
+                </span>
+              )}
               <span style={{ fontSize: 12.5, color: "var(--accent)", letterSpacing: "0.04em" }}>
                 {game.kind}
               </span>

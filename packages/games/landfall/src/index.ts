@@ -38,6 +38,7 @@ export const landfall: GameDefinition<LandfallState, LandfallMove, LandfallView>
     name: "Landfall",
     tagline: "Settle, trade, out-build the island",
     kind: "Resource trading · build a settlement",
+    familiar: { title: "CATAN", publisher: "Catan GmbH" },
     blurb: "Roll for resources, cut deals at the table, race to ten victory points.",
     minPlayers: 3,
     maxPlayers: 4,

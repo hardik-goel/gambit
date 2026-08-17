@@ -38,7 +38,8 @@ first and originate the second, entirely.
    from a CC0/public-domain source recorded in `CREDITS.md`.
 3. Rule text in the app is written in our own words. We do not reproduce
    published rulebooks.
-4. Comparative statements appear in exactly one place: `/compare`, which names
+4. Comparative statements appear in two places: on each game's cover, as "our
+   take on <title>", and on `/compare`, which names
    the well-known games ours resemble so that a newcomer can find their way in.
    This is **nominative use** — naming a product to describe a real similarity
    to it — and it is defensible only while the page makes all three of these
@@ -48,10 +49,15 @@ first and originate the second, entirely.
    - the names belong to their publishers, and are attributed to them;
    - there is no affiliation, endorsement or sponsorship, and the page says so.
 
-   Nowhere else. Not on the shelf, not on a felt, not in a tutorial, not in a
-   game's name, not in an identifier, not in a commit message. The containment
-   is the point: one page a reader chooses to open is a description; the same
-   words on the shelf would be trading on somebody else's name.
+   The shelf's footer carries the same attribution, so the claim and the
+   disclaimer are never separated.
+
+   Nowhere else. Not on a felt, not in a tutorial, not in a game's own name,
+   not in an identifier, not in rules text. `registry.test.ts` enforces this:
+   another publisher's title may appear only in a game's `familiar` field, and
+   only with the publisher recorded beside it. A title used to *describe* a
+   game is nominative use; the same title inside the game's own name or rules
+   would be a claim about its origin.
 5. Public-domain games (Chess, and any others added later) are labelled as such.
 
 ## Audio and music

@@ -38,6 +38,7 @@ export const remedy: GameDefinition<RemedyState, RemedyMove, RemedyView> = {
     name: "Remedy",
     tagline: "Beat the board — together",
     kind: "Co-operative · beat the board together",
+    familiar: { title: "Pandemic", publisher: "Z-Man Games" },
     blurb: "Four afflictions spread across the world. Your team cures all of them, or no one wins.",
     minPlayers: 2,
     maxPlayers: 5,

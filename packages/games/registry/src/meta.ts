@@ -12,6 +12,9 @@ export const SHELF_META: ShelfGame[] = [
     "name": "Chess",
     "tagline": "The eternal duel",
     "kind": "Classic strategy · two players",
+    "familiar": {
+      "title": "Chess"
+    },
     "blurb": "Full classical rules, blitz and rapid clocks, and a ladder worth climbing.",
     "players": "2",
     "minutes": 15,
@@ -29,6 +32,10 @@ export const SHELF_META: ShelfGame[] = [
     "name": "Boxcar",
     "tagline": "Claim routes, connect the map",
     "kind": "Route building · collect and claim",
+    "familiar": {
+      "title": "Ticket to Ride",
+      "publisher": "Days of Wonder"
+    },
     "blurb": "Draw cards, claim rail lines, complete secret tickets across three continents.",
     "players": "2–5",
     "minutes": 45,
@@ -46,6 +53,10 @@ export const SHELF_META: ShelfGame[] = [
     "name": "Landfall",
     "tagline": "Settle, trade, out-build the island",
     "kind": "Resource trading · build a settlement",
+    "familiar": {
+      "title": "CATAN",
+      "publisher": "Catan GmbH"
+    },
     "blurb": "Roll for resources, cut deals at the table, race to ten victory points.",
     "players": "3–4",
     "minutes": 60,
@@ -63,6 +74,10 @@ export const SHELF_META: ShelfGame[] = [
     "name": "Quintet",
     "tagline": "Cards down, five in a row",
     "kind": "Card-driven board game · five in a row",
+    "familiar": {
+      "title": "Sequence",
+      "publisher": "Jax Ltd."
+    },
     "blurb": "Play a card, place a chip, read the board. Team play at its purest.",
     "players": "2–12",
     "minutes": 25,
@@ -80,6 +95,10 @@ export const SHELF_META: ShelfGame[] = [
     "name": "Phantom",
     "tagline": "One vanishes. Everyone hunts.",
     "kind": "Hidden movement · one hides, the rest hunt",
+    "familiar": {
+      "title": "Scotland Yard",
+      "publisher": "Ravensburger"
+    },
     "blurb": "A fugitive moves unseen through the city. Detectives close the net — or don't.",
     "players": "3–6",
     "minutes": 40,
@@ -97,6 +116,10 @@ export const SHELF_META: ShelfGame[] = [
     "name": "Motive",
     "tagline": "Someone at this table did it",
     "kind": "Deduction · work out who, where and how",
+    "familiar": {
+      "title": "Cluedo / Clue",
+      "publisher": "Hasbro"
+    },
     "blurb": "Suggest, disprove, deduce. Accuse when certain — accuse wrong and you're out.",
     "players": "3–6",
     "minutes": 45,
@@ -114,6 +137,10 @@ export const SHELF_META: ShelfGame[] = [
     "name": "Hamlet",
     "tagline": "Lay the land, tile by tile",
     "kind": "Tile laying · build a countryside",
+    "familiar": {
+      "title": "Carcassonne",
+      "publisher": "Hans im Glück"
+    },
     "blurb": "Grow a countryside of roads and keeps, and claim it with your meeples.",
     "players": "2–5",
     "minutes": 35,
@@ -131,6 +158,10 @@ export const SHELF_META: ShelfGame[] = [
     "name": "Mosaic",
     "tagline": "Draft beauty, punish greed",
     "kind": "Tile drafting · complete the pattern",
+    "familiar": {
+      "title": "Azul",
+      "publisher": "Next Move Games"
+    },
     "blurb": "Take tiles from the factories, build a perfect wall, mind the floor line.",
     "players": "2–4",
     "minutes": 30,
@@ -148,6 +179,10 @@ export const SHELF_META: ShelfGame[] = [
     "name": "Facet",
     "tagline": "Build a jewel of an engine",
     "kind": "Engine building · gems, cards and patrons",
+    "familiar": {
+      "title": "Splendor",
+      "publisher": "Space Cowboys"
+    },
     "blurb": "Collect gems, chain discounts, court the patrons, hit fifteen prestige first.",
     "players": "2–4",
     "minutes": 30,
@@ -165,6 +200,10 @@ export const SHELF_META: ShelfGame[] = [
     "name": "Stronghold",
     "tagline": "Hold the map or lose it",
     "kind": "Area control · armies and territory",
+    "familiar": {
+      "title": "Risk",
+      "publisher": "Hasbro"
+    },
     "blurb": "Reinforce, attack, fortify. Regions pay dividends; hesitation pays nothing.",
     "players": "2–6",
     "minutes": 75,
@@ -182,6 +221,10 @@ export const SHELF_META: ShelfGame[] = [
     "name": "Remedy",
     "tagline": "Beat the board — together",
     "kind": "Co-operative · beat the board together",
+    "familiar": {
+      "title": "Pandemic",
+      "publisher": "Z-Man Games"
+    },
     "blurb": "Four afflictions spread across the world. Your team cures all of them, or no one wins.",
     "players": "2–5",
     "minutes": 45,

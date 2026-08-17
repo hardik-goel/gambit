@@ -38,6 +38,7 @@ export const boxcar: GameDefinition<BoxcarState, BoxcarMove, BoxcarView> = {
     name: "Boxcar",
     tagline: "Claim routes, connect the map",
     kind: "Route building · collect and claim",
+    familiar: { title: "Ticket to Ride", publisher: "Days of Wonder" },
     blurb: "Draw cards, claim rail lines, complete secret tickets across three continents.",
     minPlayers: 2,
     maxPlayers: 5,

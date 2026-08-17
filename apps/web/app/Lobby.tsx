@@ -139,6 +139,54 @@ export function Lobby({
     }
   }
 
+  /**
+   * A table against the machine, in one press.
+   *
+   * Everything needed was already there — open a room, fill the empty chairs
+   * with bots, say you are ready, deal — but only as four separate things a
+   * player had to know to do in order, from inside a lobby they had to find
+   * first. Somebody who wants a game right now should not have to hold a
+   * meeting to get one.
+   */
+  async function playComputer(gameId: string) {
+    if (busy) return;
+    setBusy(true);
+    try {
+      const made = await fetch("/api/rooms", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ gameId, passAndPlay: false })
+      });
+      const body = (await made.json()) as {
+        room?: { id: string; code: string };
+        error?: { message: string };
+      };
+      if (!made.ok || !body.room) throw new Error(body.error?.message ?? "Couldn't open a table.");
+
+      const act = (action: Record<string, unknown>) =>
+        fetch(`/api/rooms/${body.room!.id}/action`, {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify(action)
+        });
+
+      await act({ action: "fill" });
+      await act({ action: "ready", ready: true });
+      const dealt = await act({ action: "start" });
+      if (!dealt.ok) {
+        const why = (await dealt.json()) as { error?: { message: string } };
+        throw new Error(why.error?.message ?? "Couldn't deal.");
+      }
+
+      track({ name: "room_created", gameId, mode: "computer" });
+      router.push(`/r/${body.room.code}`);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Couldn't start a game.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function joinByCode() {
     const clean = code.trim().toUpperCase();
     if (clean.length < 6) return setError("Room codes are six characters.");
@@ -223,6 +271,7 @@ export function Lobby({
         onSelect={setSelected}
         onPlayHere={(id) => void createRoom(id, "here")}
         onPlayOnline={(id) => void createRoom(id, "online")}
+        onPlayComputer={(id) => void playComputer(id)}
         onTutorial={(id) => router.push(`/learn/${id}`)}
         onQuickMatch={(id) => void quickMatch(id)}
         waiting={waiting}
@@ -270,19 +319,31 @@ export function Lobby({
       <footer
         style={{
           marginTop: 30,
-          display: "flex",
-          gap: 16,
-          justifyContent: "center",
+          display: "grid",
+          gap: 8,
+          justifyItems: "center",
+          textAlign: "center",
           fontSize: 12.5,
           color: "var(--mut)"
         }}
       >
-        <a href="/compare" style={{ color: "inherit" }}>
-          If you already know these games
-        </a>
-        <a href="/learn" style={{ color: "inherit" }}>
-          Learn one in two minutes
-        </a>
+        <div style={{ display: "flex", gap: 16, flexWrap: "wrap", justifyContent: "center" }}>
+          <a href="/compare" style={{ color: "inherit" }}>
+            Which game is which
+          </a>
+          <a href="/learn" style={{ color: "inherit" }}>
+            Learn one in two minutes
+          </a>
+        </div>
+        {/* The line that makes naming another game a description rather than a
+            claim. It costs a sentence and it belongs wherever those names are
+            shown, which is now the shelf. */}
+        <p style={{ margin: 0, fontSize: 11.5, opacity: 0.75, maxWidth: 620, lineHeight: 1.6 }}>
+          Every game here is our own — our rules, our maps, our art. Titles named as
+          &ldquo;our take on&rdquo; are the trade marks of their respective owners, used only to
+          describe what ours resemble. Gambit is not affiliated with, endorsed by or sponsored by
+          any of them.
+        </p>
       </footer>
 
       <Toast message={error} onDone={() => setError(null)} />

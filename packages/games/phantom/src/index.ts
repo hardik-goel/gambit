@@ -37,6 +37,7 @@ export const phantom: GameDefinition<PhantomState, PhantomMove, PhantomView> = {
     name: "Phantom",
     tagline: "One vanishes. Everyone hunts.",
     kind: "Hidden movement · one hides, the rest hunt",
+    familiar: { title: "Scotland Yard", publisher: "Ravensburger" },
     blurb: "A fugitive moves unseen through the city. Detectives close the net — or don't.",
     minPlayers: 3,
     maxPlayers: 6,

@@ -38,6 +38,7 @@ export const stronghold: GameDefinition<StrongholdState, StrongholdMove, Strongh
     name: "Stronghold",
     tagline: "Hold the map or lose it",
     kind: "Area control · armies and territory",
+    familiar: { title: "Risk", publisher: "Hasbro" },
     blurb: "Reinforce, attack, fortify. Regions pay dividends; hesitation pays nothing.",
     minPlayers: 2,
     maxPlayers: 6,

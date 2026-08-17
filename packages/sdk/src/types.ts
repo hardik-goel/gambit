@@ -195,6 +195,15 @@ export interface GameMeta {
    * their publishers — see LEGAL.md.
    */
   kind: string;
+  /**
+   * The well-known game this one will feel familiar to, named so that a player
+   * recognises the shelf immediately rather than having to open every box.
+   *
+   * The title belongs to its publisher and is recorded with it, so that
+   * anywhere this is shown can attribute it. Public-domain games name
+   * themselves and have no publisher. See LEGAL.md and /compare.
+   */
+  familiar?: { title: string; publisher?: string };
   blurb: string;
   minPlayers: number;
   maxPlayers: number;
