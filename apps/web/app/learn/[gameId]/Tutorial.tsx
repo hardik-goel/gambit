@@ -94,7 +94,19 @@ function Coach({ gameId, def }: { gameId: string; def: AnyGameDefinition }) {
   );
 
   return (
-    <main style={{ maxWidth: 980, margin: "0 auto", padding: "20px 16px 60px", display: "grid", gap: 16 }}>
+    // minmax(0, 1fr), not the default: a grid child may otherwise be wider than
+    // the column holding it, which is how a board sized from the viewport kept
+    // pushing this page four pixels sideways however narrow the page was.
+    <main
+      style={{
+        maxWidth: 980,
+        margin: "0 auto",
+        padding: "20px 16px 60px",
+        display: "grid",
+        gridTemplateColumns: "minmax(0, 1fr)",
+        gap: 16
+      }}
+    >
       <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 }}>
         <button className="gambit-mini" onClick={() => router.push("/")}>
           ← shelf
@@ -142,7 +154,9 @@ function Coach({ gameId, def }: { gameId: string; def: AnyGameDefinition }) {
         </div>
       </Panel>
 
-      <div style={{ display: "grid", placeItems: "center" }}>
+      {/* minmax(0, 1fr) again: place-items centres the board but does nothing
+          to stop it being wider than the column it is centred in. */}
+      <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr)", placeItems: "center" }}>
         <def.Board
           view={view}
           legal={legal}

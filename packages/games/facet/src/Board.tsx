@@ -146,7 +146,7 @@ export function Board({ view, legal, seat, play, sfx }: BoardProps<FacetView, Fa
     // phone the board was wider than its own frame and took the page sideways
     // with it. Every row that can outgrow the width scrolls inside itself
     // instead.
-    <div style={{ display: "grid", gap: 14, width: "min(96vw, 760px)", maxWidth: "100%" }}>
+    <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr)", gap: 14, width: "min(96vw, 760px)", maxWidth: "100%" }}>
       {view.pending && (
         <div
           style={{
@@ -234,7 +234,7 @@ export function Board({ view, legal, seat, play, sfx }: BoardProps<FacetView, Fa
             {"·".repeat(tier)}
             <div>{view.deckCounts[tier]}</div>
           </div>
-          <div style={{ display: "flex", gap: 8, overflowX: "auto" }}>
+          <div style={{ display: "flex", gap: 8, overflowX: "auto", minWidth: 0 }}>
             {view.rows[tier].map((card, index) =>
               card ? (
                 <Card

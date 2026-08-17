@@ -68,7 +68,14 @@ export function RoomView({ roomId, code }: { roomId: string; code: string }) {
 
   if (!snapshot || !def) {
     return (
-      <main style={{ display: "grid", placeItems: "center", minHeight: "100dvh" }}>
+      <main
+        style={{
+          display: "grid",
+          gridTemplateColumns: "minmax(0, 1fr)",
+          placeItems: "center",
+          minHeight: "100dvh"
+        }}
+      >
         <div className="gambit-breathe" style={{ color: "var(--mut)", letterSpacing: 3 }}>
           setting the table…
         </div>
@@ -192,6 +199,9 @@ function Table({
     if (state.pingMs === null) return;
     track({ name: "move_latency", gameId: snapshot.gameId, ms: state.pingMs });
   }, [state.pingMs, snapshot.gameId]);
+
+  /** How many chairs are still empty — nothing may be added past zero. */
+  const seatsLeft = Math.max(0, def.meta.maxPlayers - room.players.filter((p) => p.seat !== null).length);
 
   const seats: Seat[] = useMemo(
     () =>
@@ -354,10 +364,21 @@ function Table({
             </Button>
             {isHost && (
               <>
-                <Button variant="ghost" onClick={() => void act({ action: "bot", level: 2 })}>
+                {/* Offered only while there is a seat to put one in. Both used
+                    to stay live at a full table and answer "Every seat is
+                    taken." — a button whose only outcome is an error. */}
+                <Button
+                  variant="ghost"
+                  disabled={seatsLeft === 0}
+                  onClick={() => void act({ action: "bot", level: 2 })}
+                >
                   Add a bot
                 </Button>
-                <Button variant="ghost" onClick={() => void act({ action: "fill" })}>
+                <Button
+                  variant="ghost"
+                  disabled={seatsLeft === 0}
+                  onClick={() => void act({ action: "fill" })}
+                >
                   Fill with bots
                 </Button>
                 <Button
@@ -442,7 +463,7 @@ function Table({
         </div>
 
         {state.view !== null && (
-          <div style={{ display: "grid", placeItems: "center" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr)", placeItems: "center" }}>
             <def.Board
               view={state.view}
               legal={state.legal}

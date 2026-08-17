@@ -50,7 +50,7 @@ export function Board({ view, legal, seat, play, sfx }: BoardProps<BoxcarView, B
     Object.entries(view.stationCities).find(([, cities]) => cities.includes(key))?.[0];
 
   return (
-    <div style={{ display: "grid", gap: 12, width: "min(97vw, 900px)", maxWidth: "100%" }}>
+    <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr)", gap: 12, width: "min(97vw, 900px)", maxWidth: "100%" }}>
       {view.pending && (
         <div
           style={{

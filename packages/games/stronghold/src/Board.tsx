@@ -85,7 +85,7 @@ export function Board({ view, legal, seat, play, sfx, reducedMotion }: BoardProp
   }
 
   return (
-    <div style={{ display: "grid", gap: 12, width: "min(97vw, 940px)", maxWidth: "100%" }}>
+    <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr)", gap: 12, width: "min(97vw, 940px)", maxWidth: "100%" }}>
       <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap", fontSize: 13 }}>
         <span style={{ color: "var(--accent)" }}>{view.phase}</span>
         {(view.toPlace[mySeat] ?? 0) > 0 && <span>{view.toPlace[mySeat]} armies to place</span>}
@@ -198,6 +198,11 @@ export function Board({ view, legal, seat, play, sfx, reducedMotion }: BoardProp
                 // it write `undefined`, which the browser rejects — 42 console
                 // errors a render, one per territory, for anybody who has
                 // reduced motion turned on.
+                // `initial={false}` matters as much as the target: on mount
+                // Framer resolves a "from" value for the attribute, and for an
+                // SVG `r` there is nothing to read, so it wrote `undefined` and
+                // the browser rejected it once per territory.
+                initial={false}
                 animate={{ r: lit ? 19 : 16 }}
                 transition={{ duration: reducedMotion ? 0 : 0.18 }}
               />

@@ -59,7 +59,7 @@ export function Board({ view, legal, seat, play, sfx }: BoardProps<PhantomView, 
   };
 
   return (
-    <div style={{ display: "grid", gap: 12, width: "min(97vw, 960px)", maxWidth: "100%" }}>
+    <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr)", gap: 12, width: "min(97vw, 960px)", maxWidth: "100%" }}>
       <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap", fontSize: 13 }}>
         <span style={{ color: "var(--accent)" }}>
           round {view.round} of {view.finalRound}
